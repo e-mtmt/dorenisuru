@@ -1,0 +1,13 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  messages:
+    basename: i18n/messages
+  thymeleaf:
+    mode: HTML
+
+logging:
+  level:
+    jdbc: off
+    jdbc.sqltiming: debug
