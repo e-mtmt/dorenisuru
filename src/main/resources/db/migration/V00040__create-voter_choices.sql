@@ -1,6 +1,6 @@
 create table voter_choices(
   id         serial      primary key,
-  feeling    integer     not null default 0,
+  feeling    varchar(10) not null default 'Unknown',
   comment    varchar(50) not null,
   voter_id   integer     not null references voters(id),
   choice_id  integer     not null references choices(id),
