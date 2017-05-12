@@ -1,0 +1,39 @@
+html, body {
+  height: 100%;
+  padding-top: 25px;
+}
+
+main {
+  height: 80%;
+}
+
+.top-carouselScreen .item {
+  height: 300px;
+}
+
+.top-carouselScreen img {
+  position: absolute;
+  width: 100%;
+}
+
+@media (min-width: 320px) {
+  .carousel,
+  .carousel .item,
+  .carousel .item-mask,
+  .carousel-inner .item .item-mask img {
+    height: 200px;
+  }
+}
+
+@media (min-width: 768px) {
+  .carousel,
+  .carousel .item,
+  .carousel .item-mask,
+  .carousel-inner .item .item-mask img {
+    height: 350px;
+  }
+}
+
+.top-suggest {
+  margin: 50px;
+}
