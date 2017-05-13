@@ -1,4 +1,4 @@
-package jp.eunika;
+package test.jp.eunika.dorenisuru;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

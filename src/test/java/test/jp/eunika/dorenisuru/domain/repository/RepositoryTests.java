@@ -1,4 +1,4 @@
-package jp.eunika.domain.repository;
+package test.jp.eunika.dorenisuru.domain.repository;
 
 import static org.assertj.core.api.Assertions.*;
 

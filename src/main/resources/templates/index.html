@@ -1,10 +1,8 @@
-<!doctype html>
+<!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://ultraq.net.nz/web/thymeleaf/layout"
       layout:decorate="layout">
   <head>
-    <meta charset="UTF-8" />
-    <title>dorenisuru?</title>
   </head>
   <body>
     <div layout:fragment="contents">
@@ -46,7 +44,7 @@
       <div class="container">
         <div class="text-center">
           <h3 class="top-suggest">どれにする？ みんなにきいてみよう！</h3>
-          <a href="#" class="btn btn-primary btn-lg">&emsp;トピックをつくる&emsp;</a>
+          <a th:href="@{/topics/add}" class="btn btn-primary btn-lg">&emsp;トピックをつくる&emsp;</a>
         </div>
       </div>
     </div>
