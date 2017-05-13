@@ -12,6 +12,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -30,6 +32,7 @@ public class VoterChoice {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(nullable = false, updatable = false)
 	private Integer id;
 
 	@Enumerated(EnumType.STRING)
@@ -39,7 +42,7 @@ public class VoterChoice {
 	@Column(nullable = false)
 	private String comment;
 
-	@Column(nullable = false)
+	@Column(nullable = false, updatable = false)
 	private LocalDateTime createdAt;
 
 	@Column(nullable = false)
@@ -57,10 +60,18 @@ public class VoterChoice {
 		VoterChoice voterChoice = new VoterChoice();
 		voterChoice.feeling = feeling;
 		voterChoice.comment = comment;
-		voterChoice.createdAt = LocalDateTime.now();
-		voterChoice.updatedAt = LocalDateTime.now();
 		voterChoice.voter = voter;
 		voterChoice.choice = choice;
 		return voterChoice;
+	}
+
+	@PrePersist
+	public void preCreate() {
+		this.createdAt = this.updatedAt = LocalDateTime.now();
+	}
+
+	@PreUpdate
+	public void preUpdate() {
+		this.updatedAt = LocalDateTime.now();
 	}
 }

@@ -13,6 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.LazyCollection;
@@ -32,12 +34,13 @@ import lombok.ToString;
 public class Choice {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(nullable = false, updatable = false)
 	private Integer id;
 
 	@Column(nullable = false)
 	private String text;
 
-	@Column(nullable = false)
+	@Column(nullable = false, updatable = false)
 	private LocalDateTime createdAt;
 
 	@Column(nullable = false)
@@ -54,9 +57,17 @@ public class Choice {
 	public static Choice of(String text, Topic topic) {
 		Choice choice = new Choice();
 		choice.text = text;
-		choice.createdAt = LocalDateTime.now();
-		choice.updatedAt = LocalDateTime.now();
 		choice.topic = topic;
 		return choice;
+	}
+
+	@PrePersist
+	public void preCreate() {
+		this.createdAt = this.updatedAt = LocalDateTime.now();
+	}
+
+	@PreUpdate
+	public void preUpdate() {
+		this.updatedAt = LocalDateTime.now();
 	}
 }

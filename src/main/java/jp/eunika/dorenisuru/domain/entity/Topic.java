@@ -12,6 +12,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.LazyCollection;
@@ -31,6 +33,7 @@ import lombok.ToString;
 public class Topic {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(nullable = false, updatable = false)
 	private Integer id;
 
 	@Column(nullable = false)
@@ -39,10 +42,10 @@ public class Topic {
 	@Column(nullable = false)
 	private String contents;
 
-	@Column(nullable = false)
+	@Column(nullable = false, updatable = false)
 	private String hash;
 
-	@Column(nullable = false)
+	@Column(nullable = false, updatable = false)
 	private LocalDateTime createdAt;
 
 	@Column(nullable = false)
@@ -60,9 +63,17 @@ public class Topic {
 		Topic topic = new Topic();
 		topic.title = title;
 		topic.contents = contents;
-		topic.hash = UUID.randomUUID().toString();
-		topic.createdAt = LocalDateTime.now();
-		topic.updatedAt = LocalDateTime.now();
 		return topic;
+	}
+
+	@PrePersist
+	public void preCreate() {
+		this.hash = UUID.randomUUID().toString();
+		this.createdAt = this.updatedAt = LocalDateTime.now();
+	}
+
+	@PreUpdate
+	public void preUpdate() {
+		this.updatedAt = LocalDateTime.now();
 	}
 }
