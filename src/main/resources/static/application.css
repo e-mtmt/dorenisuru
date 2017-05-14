@@ -18,6 +18,19 @@ footer {
   background-color: #cccccc;
 }
 
+.btn {
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
+}
+
+.fa {
+  margin-right: 1rem;
+}
+
+.notes {
+  display: block;
+}
+
 .top-carouselScreen .item {
   height: 300px;
 }

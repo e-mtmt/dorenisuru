@@ -3,6 +3,7 @@ package jp.eunika.dorenisuru.web.form;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import jp.eunika.dorenisuru.validation.annotation.MultiLineText;
 import lombok.Data;
 
 @Data
@@ -12,10 +13,10 @@ public class TopicForm {
 	private String title;
 
 	@NotNull
-	@Size(min = 1, max = 1000, message = "{validation.topic.contents}")
+	@Size(min = 0, max = 1000, message = "{validation.topic.contents}")
 	private String contents;
 
 	@NotNull
-	@Size(min = 1, max = 2000, message = "{validation.topic.choiceText}")
+	@MultiLineText(min = 1, max = 1000, lineMin = 1, lineMax = 30, message = "{validation.topic.choiceText}")
 	private String choiceText;
 }

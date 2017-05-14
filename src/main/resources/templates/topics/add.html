@@ -8,40 +8,56 @@
     <div layout:fragment="contents">
       <div class="container">
         <div class="page-header">
-          <h2>
-            トピックの作成
-          </h2>
+          <h2><i class="fa fa-comment-o"></i>トピックの作成</h2>
           <small class="text-muted">トピックをつくって、みんなにきいてみよう！</small>
         </div>
         <form class="form-horizontal" th:action="@{/topics}" th:object="${topicForm}" th:method="post">
           <div class="col-sm-12">
             <div class="form-group" th:classappend="${#fields.hasErrors('title')} ? 'has-error'">
-              <label for="title" class="col-md-2 control-label">タイトル<small>（必須）</small></label>
+              <div th:replace="_validate_error_message :: message"></div>
+              <label for="title" class="col-md-2 control-label">
+                タイトル
+                <small class="text-warning notes">必須・50文字まで</small>
+              </label>
               <div class="col-md-10">
-                <input type="text" name="title" placeholder="「忘年会の日程調整」 など" class="form-control" th:field="*{title}" />
+                <input type="text" name="title" placeholder="例） 忘年会の日程調整" class="form-control" th:field="*{title}" />
                 <span class="help-block" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
               </div>
             </div>
             <div class="form-group" th:classappend="${#fields.hasErrors('contents')} ? 'has-error'">
-              <label for="contents" class="col-md-2 control-label">内容</label>
+              <label for="contents" class="col-md-2 control-label">
+                内容
+                <small class="text-warning notes">1000文字まで</small>
+              </label>
               <div class="col-md-10">
-                <textarea name="contents" rows="4" placeholder="「出欠〆切は10日です！」 など" class="form-control" th:field="*{contents}" ></textarea>
+                <textarea name="contents"
+                          rows="4"
+                          placeholder="例） 出欠〆切は10日です！"
+                          class="form-control"
+                          th:field="*{contents}" ></textarea>
                 <span class="help-block" th:if="${#fields.hasErrors('contents')}" th:errors="*{contents}"></span>
               </div>
             </div>
             <div class="form-group" th:classappend="${#fields.hasErrors('choiceText')} ? 'has-error'">
-              <label for="choiceText" class="col-md-2 control-label">みんなへの選択</label>
+              <label for="choiceText" class="col-md-2 control-label">
+                選択肢
+                <small class="text-warning notes">必須・1000文字まで</small>
+              </label>
               <div class="col-md-10">
-                <textarea name="choiceText" rows="10" placeholder="候補となる日時などを入力してください。&#13;&#10;それぞれの候補は改行で区切ります。&#13;&#10;例）&#13;&#10;4/1(月) 19:00〜&#13;&#10;4/2(火) 20:00〜&#13;&#10;4/3(水) 21:00〜" class="form-control" th:field="*{choiceText}" ></textarea>
+                <textarea name="choiceText"
+                          rows="10"
+                          placeholder="選択してもらいたい日時などを入力してください。&#13;&#10;それぞれの候補は改行で区切ります。&#13;&#10;&#13;&#10;例）&#13;&#10;4/1(月) 19:00〜&#13;&#10;4/2(火) 20:00〜&#13;&#10;4/3(水) 21:00〜"
+                          class="form-control"
+                          th:field="*{choiceText}" ></textarea>
                 <span class="help-block" th:if="${#fields.hasErrors('choiceText')}" th:errors="*{choiceText}"></span>
               </div>
             </div>
             <div class="form-group">
               <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="　作成　" class="btn btn-primary" />
+                <button type="submit" class="btn btn-primary"><i class="fa fa-plus"></i>作成する</button>
               </div>
             </div>
-        </div>
+          </div>
         </form>
       </div>
     </div>
