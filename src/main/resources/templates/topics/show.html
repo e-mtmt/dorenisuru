@@ -8,12 +8,74 @@
     <div layout:fragment="contents">
       <div class="container">
         <div class="page-header">
-          <h1><i class="fa fa-comment-o"></i>トピック表示</h1>
+          <h1 th:text="${topic.title}"><i class="fa fa-comment-o"></i>トピックのタイトル</h1>
         </div>
-        <div class="well">
-          <h4 class="text-warning">DBに入れる</h4>
+        <div class="well" th:utext="${#h.br(topic.contents)}">トピックのコンテンツ</div>
+        <table class="table table-striped table-bordered">
+          <thead>
+            <tr>
+              <th>選択候補</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="choice : ${topic.choices}">
+              <td th:text="${choice.text}">1/1(月)</td>
+            </tr>
+            <tr>
+              <td class="topic-comment"><i class="fa fa-comments-o"></i>コメント</td>
+            </tr>
+          </tbody>
+        </table>
+        <button data-toggle="modal" data-target="#modal-area" class="btn btn-primary"><i class="fa fa-commenting-o"></i>回答する</button>
+        <hr />
+        <div class="panel panel-default">
+          <div class="panel-heading"><i class="fa fa-bookmark-o"></i>このトピックのURL</div>
+          <div class="panel-body">
+            <small class="text-muted notes">URLをみんなに共有しよう！</small>
+            <div class="form-group has-feedback">
+              <input type="text"
+                     readonly="readonly"
+                     class="form-control"
+                     onclick="this.select();"
+                     th:value="${#httpServletRequest.requestURL}" />
+              <span class="form-control-feedback"><i class="fa fa-share-alt"></i></span>
+            </div>
+          </div>
+        </div>
+        <a href="#" class="btn btn-default"><i class="fa fa-pencil"></i>このトピックの内容を編集する</a>
+        &emsp;
+        <a href="#" class="btn btn-danger" onclick="return confirm('削除しますか？');"><i class="fa fa-trash-o"></i>このトピックを削除する</a>
+      </div>
+
+      <div id="modal-area" data-keyboard="true" tabindex="-1" class="modal fade">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" data-dismiss="modal" class="close">&times;</button>
+            </div>
+            <div class="modal-body">
+              <h5 class="text-info"><i class="fa fa-check"></i>候補から希望を選択してね！</h5>
+              <table class="table table-striped table-bordered">
+                <tbody>
+                  <tr th:each="choice : ${topic.choices}">
+                    <td th:text="${choice.text}">1/1(月)</td>
+                    <td>選択ボタン</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="form-group has-feedback">
+                <input type="text" placeholder="コメント（50字以内）" class="form-control" />
+                <span class="form-control-feedback"><i class="fa fa-comments-o"></i></span>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <a href="#" class="btn btn-primary"><i class="fa fa-commenting-o"></i>回答</a>
+              <a href="#" class="btn btn-danger"><i class="fa fa-trash-o"></i>回答を削除</a>
+            </div>
+          </div>
         </div>
       </div>
+
     </div>
   </body>
 </html>

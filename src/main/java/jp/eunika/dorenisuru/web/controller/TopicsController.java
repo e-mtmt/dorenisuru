@@ -29,7 +29,9 @@ public class TopicsController {
 	}
 
 	@GetMapping("{hash}")
-	public String show(@PathVariable String hash) {
+	public String show(@PathVariable String hash, Model viewData) {
+		Topic topic = topicService.findOne(hash);
+		viewData.addAttribute(topic);
 		return "topics/show";
 	}
 
