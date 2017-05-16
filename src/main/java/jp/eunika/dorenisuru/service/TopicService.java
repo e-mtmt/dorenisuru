@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,9 @@ public class TopicService {
 	private VoterChoiceRepository voterChoiceRepository;
 
 	public Topic findOne(String hash) {
-		return topicRepository.findByHash(hash);
+		Topic topic = topicRepository.findByHash(hash);
+		if (topic == null) throw new EntityNotFoundException("トピックが存在しません [hash: " + hash + "]");
+		return topic;
 	}
 
 	public Topic create(TopicForm topicForm) throws Exception {
@@ -51,6 +54,7 @@ public class TopicService {
 
 	public Topic deleteByHash(String hash) {
 		Topic topic = topicRepository.findByHash(hash);
+		if (topic == null) throw new EntityNotFoundException("トピックが存在しません [hash: " + hash + "]");
 		topicRepository.delete(topic);
 		return topic;
 	}
