@@ -30,7 +30,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Entity
 @Table(name = "choices")
-@ToString(exclude = "voterChoices")
+@ToString(exclude = { "topic", "voterChoices" })
 public class Choice {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,7 +50,7 @@ public class Choice {
 	@JoinColumn(name = "topic_id", nullable = false)
 	private Topic topic;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "choice")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "choice", orphanRemoval = true)
 	@LazyCollection(LazyCollectionOption.FALSE)
 	private List<VoterChoice> voterChoices;
 

@@ -80,14 +80,14 @@ public class RepositoryTests {
 	}
 
 	@Test
-	public void findAndDeleteTopicByHash() {
+	public void findAndDeleteTopic() {
 		Topic newTopic = Topic.of("テストイベント", "イベント内容");
 		topicRepository.save(newTopic);
 
 		Topic queryTopic = topicRepository.findByHash(newTopic.getHash());
 		assertThat(queryTopic).isNotNull().isEqualToIgnoringGivenFields(newTopic, "choices", "voters");
 
-		topicRepository.deleteByHash(newTopic.getHash());
+		topicRepository.delete(newTopic);
 		assertThat(topicRepository.count()).isEqualTo(0);
 	}
 }

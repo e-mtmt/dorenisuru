@@ -13,31 +13,8 @@
         </div>
         <form class="form-horizontal" th:action="@{/topics}" th:object="${topicForm}" th:method="post">
           <div class="col-sm-12">
-            <div class="form-group" th:classappend="${#fields.hasErrors('title')} ? 'has-error'">
-              <div th:replace="_validate_error_message :: message"></div>
-              <label for="title" class="col-md-2 control-label">
-                タイトル
-                <small class="text-warning notes">必須・50文字まで</small>
-              </label>
-              <div class="col-md-10">
-                <input type="text" name="title" placeholder="例） 忘年会の日程調整" class="form-control" th:field="*{title}" />
-                <span class="help-block" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
-              </div>
-            </div>
-            <div class="form-group" th:classappend="${#fields.hasErrors('contents')} ? 'has-error'">
-              <label for="contents" class="col-md-2 control-label">
-                内容
-                <small class="text-warning notes">1000文字まで</small>
-              </label>
-              <div class="col-md-10">
-                <textarea name="contents"
-                          rows="4"
-                          placeholder="例） 出欠〆切は10日です！"
-                          class="form-control"
-                          th:field="*{contents}" ></textarea>
-                <span class="help-block" th:if="${#fields.hasErrors('contents')}" th:errors="*{contents}"></span>
-              </div>
-            </div>
+            <div th:replace="_validate_error_message :: message"></div>
+            <div class="well" th:replace="topics/_topics-form :: topics-form"></div>
             <div class="form-group" th:classappend="${#fields.hasErrors('choiceText')} ? 'has-error'">
               <label for="choiceText" class="col-md-2 control-label">
                 選択肢

@@ -51,11 +51,11 @@ public class Topic {
 	@Column(nullable = false)
 	private LocalDateTime updatedAt;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "topic")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "topic", orphanRemoval = true)
 	@LazyCollection(LazyCollectionOption.FALSE)
 	private List<Choice> choices;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "topic")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "topic", orphanRemoval = true)
 	@LazyCollection(LazyCollectionOption.FALSE)
 	private List<Voter> voters;
 

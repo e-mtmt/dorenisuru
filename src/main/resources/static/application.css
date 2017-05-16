@@ -47,25 +47,24 @@ footer {
   display: block;
 }
 
-.lineForms {
+.stackableHorizontal {
   display: flex;
   flex-wrap: wrap;
 }
 
-.lineForms .btn {
+.stackableHorizontal .btn {
   margin-right: 20px;
   margin-bottom: 10px;
 }
 
-.top-carouselScreen .item {
-  height: 300px;
+/* ---------- bootstrap-override ---------- */
+@media (max-width: 991px) {
+  .form-horizontal .control-label {
+    text-align: left;
+  }
 }
 
-.top-carouselScreen img {
-  position: absolute;
-  width: 100%;
-}
-
+/* ---------- by page ---------- */
 @media (min-width: 320px) {
   .carousel,
   .carousel .item,
@@ -82,6 +81,15 @@ footer {
   .carousel-inner .item .item-mask img {
     height: 350px;
   }
+}
+
+.top-carouselScreen .item {
+  height: 300px;
+}
+
+.top-carouselScreen img {
+  position: absolute;
+  width: 100%;
 }
 
 .top-suggest {

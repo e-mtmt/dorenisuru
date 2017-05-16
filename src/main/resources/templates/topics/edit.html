@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorate="layout">
+  <head>
+  </head>
+  <body>
+    <div layout:fragment="contents">
+      <div class="container">
+        <div class="page-header">
+          <h2><i class="fa fa-comment-o"></i>トピックの編集</h2>
+        </div>
+        <form class="form-horizontal" th:action="@{/topics/{hash}(hash=${topic.hash})}" th:object="${topicForm}" th:method="patch">
+          <div class="col-sm-12">
+            <div th:replace="_validate_error_message :: message"></div>
+            <div class="well" th:replace="topics/_topics-form :: topics-form"></div>
+            <div class="form-group" th:classappend="${#fields.hasErrors('choiceText')} ? 'has-error'">
+              <label for="choiceText" class="col-md-2 control-label">
+                選択肢
+              </label>
+              <div class="col-md-10">
+                <h5 class="text-info"><i class="fa fa-check"></i>チェックして削除</h5>
+                <div th:each="choice : ${topic.choices}">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox"
+                             th:field="*{deleteChoiceIds}"
+                             th:value="${choice.id}" />
+                      <span th:text="${choice.text}">1/1(月)</span>
+                    </label>
+                  </div>
+                </div>
+                <h5 class="text-info"><i class="fa fa-plus"></i>末尾に追加</h5>
+                <textarea name="choiceText"
+                          rows="5"
+                          placeholder="選択候補を追加したい場合は入力してください。&#13;&#10;例）&#13;&#10;4/1(月) 19:00〜&#13;&#10;4/2(火) 20:00〜"
+                          class="form-control"
+                          th:field="*{choiceText}" ></textarea>
+                <span class="help-block" th:if="${#fields.hasErrors('choiceText')}" th:errors="*{choiceText}"></span>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-md-offset-2 col-md-10 stackableHorizontal">
+                <button type="submit" class="btn btn-primary"><i class="fa fa-pencil"></i>更新する</button>
+                <a th:href="@{/topics/{hash}(hash=${topic.hash})}" class="btn btn-default"><i class="fa fa-undo"></i>キャンセル</a>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

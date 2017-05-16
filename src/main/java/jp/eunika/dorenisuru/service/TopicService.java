@@ -1,6 +1,6 @@
 package jp.eunika.dorenisuru.service;
 
-import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -38,24 +38,36 @@ public class TopicService {
 		return topic;
 	}
 
-	public Topic create(TopicForm topicForm) throws Exception {
+	public Topic create(TopicForm topicForm) {
 		Topic newTopic = BeanUtil.copy(topicForm, Topic.class);
-		List<Choice> choices = Stream.of(topicForm.getChoiceText().split("\n"))
-				.map(text -> Choice.of(text.trim(), newTopic))
-				.collect(Collectors.toList());
+		List<Choice> choices = buildChoicesByText(newTopic, topicForm.getChoiceText());
 		newTopic.setChoices(choices);
 		return topicRepository.save(newTopic);
 	}
 
-	public Topic update(Topic topic) {
-		topic.setUpdatedAt(LocalDateTime.now());
+	public Topic update(TopicForm topicForm, String hash) {
+		Topic topic = topicRepository.findByHash(hash);
+		BeanUtil.copy(topicForm, topic);
+		if (!topicForm.getDeleteChoiceIds().isEmpty()) {
+			List<Choice> deleteChoices = topic.getChoices()
+					.stream()
+					.filter(choice -> topicForm.getDeleteChoiceIds().contains(choice.getId()))
+					.collect(Collectors.toList());
+			topic.getChoices().removeAll(deleteChoices);
+		}
+		List<Choice> addChoices = buildChoicesByText(topic, topicForm.getChoiceText());
+		topic.getChoices().addAll(addChoices);
 		return topicRepository.save(topic);
 	}
 
-	public Topic deleteByHash(String hash) {
-		Topic topic = topicRepository.findByHash(hash);
-		if (topic == null) throw new EntityNotFoundException("トピックが存在しません [hash: " + hash + "]");
+	public Topic delete(String hash) {
+		Topic topic = this.findOne(hash);
 		topicRepository.delete(topic);
 		return topic;
+	}
+
+	private List<Choice> buildChoicesByText(Topic topic, String choiceText) {
+		if (choiceText == null || choiceText.isEmpty()) return Collections.emptyList();
+		return Stream.of(choiceText.split("\n")).map(text -> Choice.of(text.trim(), topic)).collect(Collectors.toList());
 	}
 }

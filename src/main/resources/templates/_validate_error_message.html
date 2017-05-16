@@ -5,8 +5,8 @@
   <body>
     <div th:fragment="message">
       <div class="alert alert-danger" th:if="${#fields.hasAnyErrors()}">
-        <button type="button" class="close" data-dismiss="alert"><i class="fa fa-times"></i></button>
-        <i class="fa fa-check"></i>入力エラーがあります。修正してください。
+        <button type="button" class="close" data-dismiss="alert"><i class="fa fa-times-circle"></i></button>
+        <i class="fa fa-exclamation-triangle"></i>入力エラーがあります。修正してください。
       </div>
     </div>
   </body>

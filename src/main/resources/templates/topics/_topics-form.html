@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+  </head>
+  <body>
+    <div th:fragment="topics-form">
+      <div class="form-group" th:classappend="${#fields.hasErrors('title')} ? 'has-error'">
+        <label for="title" class="col-md-2 control-label">
+          タイトル
+          <small class="text-warning notes">必須・50文字まで</small>
+        </label>
+        <div class="col-md-10">
+          <input type="text" name="title" placeholder="例） 忘年会の日程調整" class="form-control" th:field="*{title}" />
+          <span class="help-block" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
+        </div>
+      </div>
+      <div class="form-group" th:classappend="${#fields.hasErrors('contents')} ? 'has-error'">
+        <label for="contents" class="col-md-2 control-label">
+          内容
+          <small class="text-warning notes">1000文字まで</small>
+        </label>
+        <div class="col-md-10">
+          <textarea name="contents"
+                    rows="4"
+                    placeholder="例） 出欠〆切は10日です！"
+                    class="form-control"
+                    th:field="*{contents}" ></textarea>
+          <span class="help-block" th:if="${#fields.hasErrors('contents')}" th:errors="*{contents}"></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

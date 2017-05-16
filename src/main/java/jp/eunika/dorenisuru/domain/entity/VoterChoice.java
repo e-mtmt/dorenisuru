@@ -19,12 +19,14 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "voter_choices")
+@ToString(exclude = { "voter", "choice" })
 public class VoterChoice {
 	public enum Feeling {
 		OK, NG, Unknown

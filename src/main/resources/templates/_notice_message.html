@@ -5,11 +5,11 @@
   <body>
     <div th:fragment="message">
       <div class="alert alert-success noticeMessage" th:if="${informationMessage}">
-        <button type="button" class="close" data-dismiss="alert"><i class="fa fa-times"></i></button>
+        <button type="button" class="close" data-dismiss="alert"><i class="fa fa-times-circle"></i></button>
         <i class="fa fa-check-square-o"></i><span th:text="${informationMessage}">通常メッセージ</span>
       </div>
       <div class="alert alert-danger noticeMessage" th:if="${warningMessage}">
-        <button type="button" class="close" data-dismiss="alert"><i class="fa fa-times"></i></button>
+        <button type="button" class="close" data-dismiss="alert"><i class="fa fa-times-circle"></i></button>
         <i class="fa fa-exclamation-triangle"></i><span th:text="${warningMessage}">警告メッセージ</span>
       </div>
     </div>
