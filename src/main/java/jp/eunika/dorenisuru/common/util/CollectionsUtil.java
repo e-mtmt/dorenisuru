@@ -1,4 +1,4 @@
-package jp.eunika.dorenisuru.util;
+package jp.eunika.dorenisuru.common.util;
 
 import java.util.AbstractMap;
 import java.util.List;

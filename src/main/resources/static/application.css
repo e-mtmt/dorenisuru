@@ -15,9 +15,14 @@ footer {
   width: 100%;
   height: 35px;
   padding: 10px;
-  background-color: #555555;
-  color: #aaaaaa;
+  background-color: #777777;
+  color: #cccccc;
   font-size: 90%;
+  opacity: 0.9;
+}
+
+.noticeMessage {
+  margin-bottom: 0;
 }
 
 .btn {
@@ -31,6 +36,16 @@ footer {
 
 .notes {
   display: block;
+}
+
+.lineForms {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.lineForms .btn {
+  margin-right: 20px;
+  margin-bottom: 10px;
 }
 
 .top-carouselScreen .item {

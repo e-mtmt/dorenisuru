@@ -1,6 +1,6 @@
 package jp.eunika.dorenisuru;
 
-import static jp.eunika.dorenisuru.util.CollectionsUtil.*;
+import static jp.eunika.dorenisuru.common.util.CollectionsUtil.*;
 
 import java.util.Map;
 import java.util.Set;
@@ -15,7 +15,7 @@ import org.thymeleaf.context.IExpressionContext;
 import org.thymeleaf.dialect.IExpressionObjectDialect;
 import org.thymeleaf.expression.IExpressionObjectFactory;
 
-import jp.eunika.dorenisuru.util.ThymeleafViewHelper;
+import jp.eunika.dorenisuru.common.util.ThymeleafViewHelper;
 
 @Configuration
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
