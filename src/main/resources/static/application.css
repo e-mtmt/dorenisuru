@@ -65,6 +65,15 @@ footer {
 }
 
 /* ---------- by page ---------- */
+.top-carouselScreen .item {
+  height: 300px;
+}
+
+.top-carouselScreen img {
+  position: absolute;
+  width: 100%;
+}
+
 @media (min-width: 320px) {
   .carousel,
   .carousel .item,
@@ -81,15 +90,6 @@ footer {
   .carousel-inner .item .item-mask img {
     height: 350px;
   }
-}
-
-.top-carouselScreen .item {
-  height: 300px;
-}
-
-.top-carouselScreen img {
-  position: absolute;
-  width: 100%;
 }
 
 .top-suggest {

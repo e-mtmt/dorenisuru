@@ -6,9 +6,12 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
+import org.springframework.boot.web.servlet.ErrorPage;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.thymeleaf.context.IExpressionContext;
@@ -58,6 +61,13 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 					}
 				};
 			}
+		};
+	}
+
+	@Bean
+	public EmbeddedServletContainerCustomizer servletContainerCustomizer() {
+		return (servletContainer) -> {
+			servletContainer.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, "/404"));
 		};
 	}
 }
