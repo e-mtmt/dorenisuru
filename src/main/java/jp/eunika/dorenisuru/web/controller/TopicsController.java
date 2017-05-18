@@ -25,6 +25,7 @@ import jp.eunika.dorenisuru.common.util.BeanUtil;
 import jp.eunika.dorenisuru.domain.entity.Topic;
 import jp.eunika.dorenisuru.service.TopicService;
 import jp.eunika.dorenisuru.web.form.TopicForm;
+import jp.eunika.dorenisuru.web.form.VoteForm;
 
 @Controller
 @RequestMapping("/topics")
@@ -33,8 +34,13 @@ public class TopicsController {
 	private TopicService topicService;
 
 	@ModelAttribute
-	public TopicForm setUpForm() {
+	public TopicForm setUpTopicForm() {
 		return new TopicForm();
+	}
+
+	@ModelAttribute
+	public VoteForm setUpVoteForm() {
+		return new VoteForm();
 	}
 
 	@ExceptionHandler(EntityNotFoundException.class)

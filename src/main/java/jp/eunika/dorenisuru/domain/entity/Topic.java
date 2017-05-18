@@ -7,6 +7,7 @@ import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -75,5 +76,10 @@ public class Topic {
 	@PreUpdate
 	public void preUpdate() {
 		this.updatedAt = LocalDateTime.now();
+	}
+
+	public Choice getChoice(Integer choiceId) {
+		return choices.stream().filter(choice -> choice.getId() == choiceId).findAny().orElseThrow(
+				EntityNotFoundException::new);
 	}
 }

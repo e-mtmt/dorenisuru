@@ -55,13 +55,11 @@ public class RepositoryTests {
 		List<String> voterNames = Arrays.asList("横尾", "鈴木", "大江", "芝山", "松本");
 
 		newTopic.setChoices(choiceTexts.stream().map(text -> Choice.of(text, newTopic)).collect(Collectors.toList()));
-		newTopic.setVoters(voterNames.stream().map(name -> Voter.of(name, newTopic)).collect(Collectors.toList()));
+		newTopic.setVoters(voterNames.stream().map(name -> Voter.of(name, "コメント", newTopic)).collect(Collectors.toList()));
 		newTopic.getChoices().forEach(choice -> {
 			choice.setVoterChoices(
-					newTopic.getVoters()
-							.stream()
-							.map(voter -> VoterChoice.of(VoterChoice.Feeling.OK, "コメント", voter, choice))
-							.collect(Collectors.toList()));
+					newTopic.getVoters().stream().map(voter -> VoterChoice.of(VoterChoice.Feeling.OK, voter, choice)).collect(
+							Collectors.toList()));
 		});
 		topicRepository.save(newTopic);
 

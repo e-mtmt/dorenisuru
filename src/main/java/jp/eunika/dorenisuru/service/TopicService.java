@@ -14,23 +14,17 @@ import org.springframework.stereotype.Service;
 import jp.eunika.dorenisuru.common.util.BeanUtil;
 import jp.eunika.dorenisuru.domain.entity.Choice;
 import jp.eunika.dorenisuru.domain.entity.Topic;
-import jp.eunika.dorenisuru.domain.repository.ChoiceRepository;
+import jp.eunika.dorenisuru.domain.entity.Voter;
+import jp.eunika.dorenisuru.domain.entity.VoterChoice;
 import jp.eunika.dorenisuru.domain.repository.TopicRepository;
-import jp.eunika.dorenisuru.domain.repository.VoterChoiceRepository;
-import jp.eunika.dorenisuru.domain.repository.VoterRepository;
 import jp.eunika.dorenisuru.web.form.TopicForm;
+import jp.eunika.dorenisuru.web.form.VoteForm;
 
 @Service
 @Transactional
 public class TopicService {
 	@Autowired
 	private TopicRepository topicRepository;
-	@Autowired
-	private ChoiceRepository choiceRepository;
-	@Autowired
-	private VoterRepository voterRepository;
-	@Autowired
-	private VoterChoiceRepository voterChoiceRepository;
 
 	public Topic findOne(String hash) {
 		Topic topic = topicRepository.findByHash(hash);
@@ -64,6 +58,19 @@ public class TopicService {
 		Topic topic = this.findOne(hash);
 		topicRepository.delete(topic);
 		return topic;
+	}
+
+	public void addVote(String topicHash, VoteForm voteForm) {
+		Topic topic = this.findOne(topicHash);
+		Voter voter = Voter.of(voteForm.getVoterName(), voteForm.getVoteComment(), topic);
+		topic.getVoters().add(voter);
+		List<VoterChoice> voterChoices = voteForm.getChoiceFeelings()
+				.entrySet()
+				.stream()
+				.map(entry -> VoterChoice.of(entry.getValue(), voter, topic.getChoice(entry.getKey())))
+				.collect(Collectors.toList());
+		voter.setVoterChoices(voterChoices);
+		topicRepository.save(topic);
 	}
 
 	private List<Choice> buildChoicesByText(Topic topic, String choiceText) {

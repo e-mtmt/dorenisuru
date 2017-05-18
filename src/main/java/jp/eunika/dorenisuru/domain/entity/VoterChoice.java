@@ -41,9 +41,6 @@ public class VoterChoice {
 	@Column(nullable = false)
 	private Feeling feeling;
 
-	@Column(nullable = false)
-	private String comment;
-
 	@Column(nullable = false, updatable = false)
 	private LocalDateTime createdAt;
 
@@ -58,10 +55,9 @@ public class VoterChoice {
 	@JoinColumn(name = "choice_id", nullable = false)
 	private Choice choice;
 
-	public static VoterChoice of(Feeling feeling, String comment, Voter voter, Choice choice) {
+	public static VoterChoice of(Feeling feeling, Voter voter, Choice choice) {
 		VoterChoice voterChoice = new VoterChoice();
 		voterChoice.feeling = feeling;
-		voterChoice.comment = comment;
 		voterChoice.voter = voter;
 		voterChoice.choice = choice;
 		return voterChoice;

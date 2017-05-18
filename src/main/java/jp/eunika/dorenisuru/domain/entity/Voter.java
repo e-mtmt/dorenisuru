@@ -40,6 +40,9 @@ public class Voter {
 	@Column(nullable = false)
 	private String name;
 
+	@Column(nullable = false)
+	private String comment;
+
 	@Column(nullable = false, updatable = false)
 	private LocalDateTime createdAt;
 
@@ -54,9 +57,10 @@ public class Voter {
 	@LazyCollection(LazyCollectionOption.FALSE)
 	private List<VoterChoice> voterChoices;
 
-	public static Voter of(String name, Topic topic) {
+	public static Voter of(String name, String comment, Topic topic) {
 		Voter voter = new Voter();
 		voter.name = name;
+		voter.comment = comment;
 		voter.topic = topic;
 		return voter;
 	}
