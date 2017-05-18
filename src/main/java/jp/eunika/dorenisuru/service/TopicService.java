@@ -16,7 +16,9 @@ import jp.eunika.dorenisuru.domain.entity.Choice;
 import jp.eunika.dorenisuru.domain.entity.Topic;
 import jp.eunika.dorenisuru.domain.entity.Voter;
 import jp.eunika.dorenisuru.domain.entity.VoterChoice;
+import jp.eunika.dorenisuru.domain.repository.ChoiceRepository;
 import jp.eunika.dorenisuru.domain.repository.TopicRepository;
+import jp.eunika.dorenisuru.domain.repository.VoterChoiceRepository;
 import jp.eunika.dorenisuru.web.form.TopicForm;
 import jp.eunika.dorenisuru.web.form.VoteForm;
 
@@ -25,6 +27,10 @@ import jp.eunika.dorenisuru.web.form.VoteForm;
 public class TopicService {
 	@Autowired
 	private TopicRepository topicRepository;
+	@Autowired
+	private ChoiceRepository choiceRepository;
+	@Autowired
+	private VoterChoiceRepository voterChoiceRepository;
 
 	public Topic findOne(String hash) {
 		Topic topic = topicRepository.findByHash(hash);
@@ -40,17 +46,16 @@ public class TopicService {
 	}
 
 	public Topic update(TopicForm topicForm, String hash) {
+		if (!topicForm.getDeleteChoiceIds().isEmpty()) {
+			topicForm.getDeleteChoiceIds().stream().forEach(choiceRepository::delete);
+			choiceRepository.flush();
+		}
 		Topic topic = topicRepository.findByHash(hash);
 		BeanUtil.copy(topicForm, topic);
-		if (!topicForm.getDeleteChoiceIds().isEmpty()) {
-			List<Choice> deleteChoices = topic.getChoices()
-					.stream()
-					.filter(choice -> topicForm.getDeleteChoiceIds().contains(choice.getId()))
-					.collect(Collectors.toList());
-			topic.getChoices().removeAll(deleteChoices);
+		if (!topicForm.getChoiceText().isEmpty()) {
+			List<Choice> addChoices = buildChoicesByText(topic, topicForm.getChoiceText());
+			topic.getChoices().addAll(addChoices);
 		}
-		List<Choice> addChoices = buildChoicesByText(topic, topicForm.getChoiceText());
-		topic.getChoices().addAll(addChoices);
 		return topicRepository.save(topic);
 	}
 

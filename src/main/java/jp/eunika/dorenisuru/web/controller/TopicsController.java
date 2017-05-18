@@ -1,5 +1,7 @@
 package jp.eunika.dorenisuru.web.controller;
 
+import java.util.stream.Collectors;
+
 import javax.persistence.EntityNotFoundException;
 import javax.validation.groups.Default;
 
@@ -22,7 +24,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jp.eunika.dorenisuru.common.constants.AppConstants;
 import jp.eunika.dorenisuru.common.util.BeanUtil;
+import jp.eunika.dorenisuru.domain.entity.Choice;
 import jp.eunika.dorenisuru.domain.entity.Topic;
+import jp.eunika.dorenisuru.domain.entity.VoterChoice;
 import jp.eunika.dorenisuru.service.TopicService;
 import jp.eunika.dorenisuru.web.form.TopicForm;
 import jp.eunika.dorenisuru.web.form.VoteForm;
@@ -50,9 +54,11 @@ public class TopicsController {
 	}
 
 	@GetMapping("{hash}")
-	public String show(@PathVariable String hash, Model viewData) {
+	public String show(@PathVariable String hash, Model viewData, VoteForm voteForm) {
 		Topic topic = topicService.findOne(hash);
 		viewData.addAttribute(topic);
+		voteForm.setChoiceFeelings(
+				topic.getChoices().stream().collect(Collectors.toMap(Choice::getId, c -> VoterChoice.Feeling.Unknown)));
 		return "topics/show";
 	}
 

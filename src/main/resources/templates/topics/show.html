@@ -13,22 +13,37 @@
         <div class="well" th:unless="${#strings.isEmpty(topic.contents)}" th:utext="${#h.br(topic.contents)}">
           トピックのコンテンツ
         </div>
-        <table class="table table-striped table-bordered">
+        <table class="table table-bordered">
           <thead>
             <tr>
               <th>選択候補</th>
+              <th th:each="voter : ${topic.voters}" th:text="${voter.name}">mtmt</th>
             </tr>
           </thead>
           <tbody>
             <tr th:each="choice : ${topic.choices}">
               <td th:text="${choice.text}">1/1(月)</td>
+              <th:block th:each="voter : ${topic.voters}">
+                <th:block th:each="voterChoice : ${voter.voterChoices}">
+                  <th:block th:if="${(voterChoice.choice.id == choice.id)}">
+                    <td class="text-center">
+                      <div th:if="${#strings.equals(voterChoice.feeling, 'OK')}"><i class="fa fa-lg fa-thumbs-o-up text-info"></i></div>
+                      <div th:if="${#strings.equals(voterChoice.feeling, 'NG')}"><i class="fa fa-lg fa-thumbs-o-down text-danger"></i></div>
+                      <div th:if="${#strings.equals(voterChoice.feeling, 'Unknown')}"><i class="fa fa-lg fa-minus text-muted"></i></div>
+                    </td>
+                  </th:block>
+                </th:block>
+              </th:block>
             </tr>
             <tr>
-              <td class="topic-comment"><i class="fa fa-comments-o"></i>コメント</td>
+              <td class="topic-comment text-right"><i class="fa fa-comments-o"></i>コメント</td>
+              <td th:each="voter : ${topic.voters}" th:text="${voter.comment}">楽しみにしてます！</td>
             </tr>
           </tbody>
         </table>
-        <button data-toggle="modal" data-target="#modal-area" class="btn btn-primary"><i class="fa fa-commenting-o"></i>回答する</button>
+        <button data-toggle="modal" data-target="#add-vote-modal" class="btn btn-primary">
+          <i class="fa fa-external-link"></i>回答する
+        </button>
         <hr />
         <div class="panel panel-default">
           <div class="panel-heading"><i class="fa fa-bookmark-o"></i>このトピックのURL</div>
@@ -55,83 +70,7 @@
           </form>
         </div>
       </div>
-
-      <div id="modal-area" data-keyboard="true" tabindex="-1" class="modal fade">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-body">
-              <button type="button" data-dismiss="modal" class="close"><i class="fa fa-times-circle"></i></button>
-              <h5 class="text-info"><i class="fa fa-check"></i>名前を入力して、候補から希望を選択してね！</h5>
-              <form id="add-vote-form"
-                    class="form-horizontal"
-                    th:action="@{/topics/{hash}/votes(hash=${topic.hash})}"
-                    th:object="${voteForm}"
-                    th:method="post">
-                <div class="col-md-12">
-                  <div class="form-group" th:classappend="${#fields.hasErrors('voterName')}? 'has-error'">
-                    <label for="name" class="col-md-2 control-label">
-                      名前
-                      <small class="text-warning">（必須・20文字まで）</small>
-                    </label>
-                    <div class="col-md-10">
-                      <input type="text" class="form-control" th:field="*{voterName}" />
-                      <span class="help-block" th:if="${#fields.hasErrors('voterName')}" th:errors="*{voterName}"></span>
-                    </div>
-                  </div>
-                  <div class="form-group" th:classappend="${#fields.hasErrors('choiceFeelings')}? 'has-error'">
-                    <label for="choice" class="col-md-2 control-label">
-                      選択候補
-                      <small class="text-warning">（必須）</small>
-                    </label>
-                    <div class="col-md-10">
-                      <table class="table table-striped table-bordered">
-                        <tbody>
-                          <tr th:each="choice : ${topic.choices}">
-                            <td th:text="${choice.text}">1/1(月)</td>
-                            <td>
-                              <div class="btn-group btn-group-justified"
-                                   data-toggle="buttons"
-                                   th:with="fieldName='choiceFeelings[__${choice.id}__]'">
-                                <label class="btn btn-default">
-                                  <input type="radio" value="NG" th:field="*{__${fieldName}__}" />
-                                  <i class="fa fa-lg fa-thumbs-o-down text-danger"></i>
-                                </label>
-                                <label class="btn btn-default">
-                                  <input type="radio" value="Unknown" th:field="*{__${fieldName}__}" />
-                                  <i class="fa fa-lg fa-minus text-muted"></i>
-                                </label>
-                                <label class="btn btn-default">
-                                  <input type="radio" value="OK" th:field="*{__${fieldName}__}" />
-                                  <i class="fa fa-lg fa-thumbs-o-up text-info"></i>
-                                </label>
-                              </div>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                      <span class="help-block" th:if="${#fields.hasErrors('choiceFeelings')}" th:errors="*{choiceFeelings}"></span>
-                    </div>
-                  </div>
-                  <div class="form-group" th:classappend="${#fields.hasErrors('voteComment')}? 'has-error'">
-                    <label for="comment" class="col-md-2 control-label">
-                      コメント
-                      <small class="text-warning">（50文字まで）</small>
-                    </label>
-                    <div class="col-md-10">
-                      <input type="text" class="form-control" th:field="*{voteComment}" />
-                      <span class="help-block" th:if="${#fields.hasErrors('voteComment')}" th:errors="*{voteComment}"></span>
-                    </div>
-                  </div>
-                </div>
-              </form>
-            </div>
-            <div class="modal-footer">
-              <button type="submit" form="add-vote-form" class="btn btn-primary"><i class="fa fa-commenting-o"></i>回答</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
+      <div th:replace="topics/_vote-modal-dialog :: dialog"></div>
     </div>
   </body>
 </html>
