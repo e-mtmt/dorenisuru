@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -54,10 +55,12 @@ public class Topic {
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "topic", orphanRemoval = true)
 	@LazyCollection(LazyCollectionOption.FALSE)
+	@OrderBy("createdAt asc")
 	private List<Choice> choices;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "topic", orphanRemoval = true)
 	@LazyCollection(LazyCollectionOption.FALSE)
+	@OrderBy("createdAt asc")
 	private List<Voter> voters;
 
 	public static Topic of(String title, String contents) {

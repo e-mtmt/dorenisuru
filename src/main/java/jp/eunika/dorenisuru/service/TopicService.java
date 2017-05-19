@@ -18,10 +18,10 @@ import jp.eunika.dorenisuru.domain.entity.Choice;
 import jp.eunika.dorenisuru.domain.entity.Topic;
 import jp.eunika.dorenisuru.domain.entity.Voter;
 import jp.eunika.dorenisuru.domain.entity.VoterChoice;
+import jp.eunika.dorenisuru.domain.misc.VoteSummary;
 import jp.eunika.dorenisuru.domain.repository.ChoiceRepository;
 import jp.eunika.dorenisuru.domain.repository.TopicRepository;
 import jp.eunika.dorenisuru.domain.repository.VoterRepository;
-import jp.eunika.dorenisuru.web.data.VoteSummary;
 import jp.eunika.dorenisuru.web.form.TopicForm;
 import jp.eunika.dorenisuru.web.form.VoteForm;
 
@@ -35,36 +35,26 @@ public class TopicService {
 	@Autowired
 	private VoterRepository voterRepository;
 
-	public Topic findOne(String hash) {
+	public Topic findTopic(String hash) {
 		Topic topic = topicRepository.findByHash(hash);
 		if (topic == null) throw new EntityNotFoundException("トピックが存在しません [hash: " + hash + "]");
 		return topic;
 	}
 
 	public Tuple2<Topic, VoteSummary> makeShowableTopicData(String topicHash) {
-		Topic topic = this.findOne(topicHash);
-		VoteSummary voteSummary = new VoteSummary();
-		Map<Integer, List<VoterChoice.Feeling>> feelingsByChoice = topic.getChoices().stream().collect(
-				Collectors.toMap(Choice::getId, choice -> topic.getVoters().stream().map(voter -> {
-					return choice.getVoterChoices()
-							.stream()
-							.filter(voterChoice -> voterChoice.getChoice().equals(choice) && voterChoice.getVoter().equals(voter))
-							.findFirst()
-							.map(VoterChoice::getFeeling)
-							.orElse(VoterChoice.Feeling.Unknown);
-				}).collect(Collectors.toList())));
-		voteSummary.setFeelingsByChoice(feelingsByChoice);
+		Topic topic = this.findTopic(topicHash);
+		VoteSummary voteSummary = VoteSummary.of(topic);
 		return Tuple2.of(topic, voteSummary);
 	}
 
-	public Topic create(TopicForm topicForm) {
+	public Topic createTopic(TopicForm topicForm) {
 		Topic newTopic = BeanUtil.copy(topicForm, Topic.class);
 		List<Choice> choices = buildChoicesByText(newTopic, topicForm.getChoiceText());
 		newTopic.setChoices(choices);
 		return topicRepository.save(newTopic);
 	}
 
-	public Topic update(TopicForm topicForm, String hash) {
+	public Topic updateTopic(TopicForm topicForm, String hash) {
 		if (!topicForm.getDeleteChoiceIds().isEmpty()) {
 			topicForm.getDeleteChoiceIds().stream().forEach(choiceRepository::delete);
 			choiceRepository.flush();
@@ -78,8 +68,8 @@ public class TopicService {
 		return topicRepository.save(topic);
 	}
 
-	public Topic delete(String hash) {
-		Topic topic = this.findOne(hash);
+	public Topic deleteTopic(String hash) {
+		Topic topic = this.findTopic(hash);
 		topicRepository.delete(topic);
 		return topic;
 	}
@@ -91,7 +81,7 @@ public class TopicService {
 	}
 
 	public Topic makeAddableVoteData(String topicHash, VoteForm voteForm) {
-		Topic topic = this.findOne(topicHash);
+		Topic topic = this.findTopic(topicHash);
 		if (voteForm.getChoiceFeelings() == null) {
 			Map<Integer, VoterChoice.Feeling> choiceFeelings = topic.getChoices().stream().collect(
 					Collectors.toMap(Choice::getId, choice -> VoterChoice.Feeling.Unknown));
@@ -112,8 +102,8 @@ public class TopicService {
 		return voter;
 	}
 
-	public void addVote(String topicHash, VoteForm voteForm) {
-		Topic topic = this.findOne(topicHash);
+	public void createVote(String topicHash, VoteForm voteForm) {
+		Topic topic = this.findTopic(topicHash);
 		Voter voter = Voter.of(voteForm.getName(), voteForm.getComment(), topic);
 		topic.getVoters().add(voter);
 		List<VoterChoice> voterChoices = voteForm.getChoiceFeelings()
@@ -130,7 +120,7 @@ public class TopicService {
 		BeanUtil.copy(voteForm, voter);
 		voter.getVoterChoices().clear();
 		voterRepository.saveAndFlush(voter);
-		Topic topic = this.findOne(topicHash);
+		Topic topic = this.findTopic(topicHash);
 		List<VoterChoice> voterChoices = voteForm.getChoiceFeelings()
 				.entrySet()
 				.stream()

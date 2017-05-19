@@ -29,7 +29,17 @@ import lombok.ToString;
 @ToString(exclude = { "voter", "choice" })
 public class VoterChoice {
 	public enum Feeling {
-		OK, NG, Unknown
+		OK(100), NG(0), Unknown(50);
+
+		private final int percentage;
+
+		private Feeling(int percentage) {
+			this.percentage = percentage;
+		}
+
+		public int getPercentage() {
+			return percentage;
+		}
 	}
 
 	@Id

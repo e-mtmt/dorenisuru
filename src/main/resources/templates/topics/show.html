@@ -9,20 +9,25 @@
       <div class="container">
         <div class="page-header">
           <h2 th:text="${topic.title}"><i class="fa fa-comment-o"></i>トピックのタイトル</h2>
-          <div class="text-left"><span class="label label-default">回答数：<span th:text="${topic.voters.size()}"></span></span></div>
+          <div class="text-left"><span class="label label-default">回答数：<span th:text="${#lists.size(topic.voters)}"></span></span></div>
         </div>
         <div class="well" th:unless="${#strings.isEmpty(topic.contents)}" th:utext="${#h.br(topic.contents)}">
           トピックのコンテンツ
         </div>
-        <div class="text-right">
-          <small class="text-muted"><i class="fa fa-hand-o-right"></i>回答の変更は名前をクリックしてね！</small>
-        </div>
+        <th:block th:if="${#lists.isEmpty(topic.voters)}">
+          <div class="text-info"><i class="fa fa-info-circle"></i>まだ回答はありません</div>
+        </th:block>
+        <th:block th:unless="${#lists.isEmpty(topic.voters)}">
+          <div class="text-right">
+            <small class="text-muted"><i class="fa fa-hand-o-right"></i>回答の変更は名前をクリックしてね！</small>
+          </div>
+        </th:block>
         <div class="table-responsive">
           <table class="table table-bordered">
             <thead>
-              <tr>
-                <th>選択候補</th>
-                <th th:each="voter : ${topic.voters}">
+              <tr class="vote-table-frame">
+                <th>選択候補<small class="text-muted">（OK率）</small></th>
+                <th class="text-center" th:each="voter : ${topic.voters}">
                   <a th:href="@{/topics/{topicHash}/voters/{id}/edit(topicHash=${topic.hash}, id=${voter.id})}">
                     <span th:text="${voter.name}"></span>
                   </a>
@@ -30,18 +35,23 @@
               </tr>
             </thead>
             <tbody>
-              <tr th:each="choice : ${topic.choices}">
-                <td th:text="${choice.text}">1/1(月)</td>
-                <th:block th:each="feeling : ${voteSummary.getFeelings(choice.id)}">
-                  <td class="text-center" th:switch="${feeling.name()}">
-                    <div th:case="${'OK'}"><i class="fa fa-lg fa-thumbs-o-up text-info"></i></div>
-                    <div th:case="${'NG'}"><i class="fa fa-lg fa-thumbs-o-down text-danger"></i></div>
-                    <div th:case="${'Unknown'}"><i class="fa fa-lg fa-minus text-muted"></i></div>
+              <th:block th:each="choice : ${topic.choices}">
+                <tr>
+                  <td th:style="'background-color: rgba(255, 255, 100, ' + ${voteSummary.getRatio(choice.id) + ');'}">
+                    <span th:text="${choice.text}">1/1(月)</span>
+                    <small class="pull-right text-muted" th:text="${voteSummary.getPercentage(choice.id)} + '%'">50%</small>
                   </td>
-                </th:block>
-              </tr>
-              <tr>
-                <td class="topic-comment text-right"><i class="fa fa-commenting-o"></i>コメント</td>
+                  <th:block th:each="feeling : ${voteSummary.getFeelings(choice.id)}">
+                    <td class="text-center" th:switch="${feeling.name()}">
+                      <div th:case="${'OK'}"><i class="fa fa-lg fa-thumbs-o-up text-info"></i></div>
+                      <div th:case="${'NG'}"><i class="fa fa-lg fa-thumbs-o-down text-danger"></i></div>
+                      <div th:case="${'Unknown'}"><i class="fa fa-lg fa-minus text-muted"></i></div>
+                    </td>
+                  </th:block>
+                </tr>
+              </th:block>
+              <tr th:unless="${#lists.isEmpty(topic.voters)}">
+                <th class="text-right vote-table-frame"><i class="fa fa-commenting-o"></i>コメント</th>
                 <td th:each="voter : ${topic.voters}" th:text="${voter.comment}">楽しみにしてます！</td>
               </tr>
             </tbody>
@@ -57,9 +67,9 @@
             <small class="text-muted notes">URLをみんなに共有しよう！</small>
             <div class="form-group has-feedback">
               <input type="text"
-                     readonly="readonly"
+                     id="topic-url"
                      class="form-control"
-                     onclick="this.select();"
+                     readonly="readonly"
                      th:value="${#httpServletRequest.requestURL}" />
               <span class="form-control-feedback"><i class="fa fa-share-alt"></i></span>
             </div>

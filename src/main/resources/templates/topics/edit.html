@@ -11,7 +11,7 @@
           <h2><i class="fa fa-comment-o"></i>トピックの編集</h2>
         </div>
         <form class="form-horizontal" th:action="@{/topics/{hash}(hash=${topic.hash})}" th:object="${topicForm}" th:method="patch">
-          <div class="col-sm-12">
+          <div class="col-md-12">
             <div th:replace="_validate_error_message :: message"></div>
             <div class="well" th:replace="topics/_topics-form :: topics-form"></div>
             <div class="form-group" th:classappend="${#fields.hasErrors('choiceText')} ? 'has-error'">

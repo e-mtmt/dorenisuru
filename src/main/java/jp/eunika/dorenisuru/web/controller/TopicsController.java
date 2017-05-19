@@ -24,8 +24,8 @@ import jp.eunika.dorenisuru.common.constants.AppConstants;
 import jp.eunika.dorenisuru.common.util.BeanUtil;
 import jp.eunika.dorenisuru.common.util.Tuple2;
 import jp.eunika.dorenisuru.domain.entity.Topic;
+import jp.eunika.dorenisuru.domain.misc.VoteSummary;
 import jp.eunika.dorenisuru.service.TopicService;
-import jp.eunika.dorenisuru.web.data.VoteSummary;
 import jp.eunika.dorenisuru.web.form.TopicForm;
 import jp.eunika.dorenisuru.web.form.VoteForm;
 
@@ -54,10 +54,7 @@ public class TopicsController {
 	@GetMapping("{hash}")
 	public String show(@PathVariable String hash, Model viewData) {
 		Tuple2<Topic, VoteSummary> result = topicService.makeShowableTopicData(hash);
-		Topic topic = result.getValue1();
-		VoteSummary voteSummary = result.getValue2();
-		viewData.addAttribute(topic);
-		viewData.addAttribute(voteSummary);
+		viewData.addAttribute(result.getValue1()).addAttribute(result.getValue2());
 		return "topics/show";
 	}
 
@@ -72,13 +69,13 @@ public class TopicsController {
 			BindingResult result,
 			Model viewData) {
 		if (result.hasErrors()) return add();
-		Topic newTopic = topicService.create(topicForm);
+		Topic newTopic = topicService.createTopic(topicForm);
 		return "redirect:/topics/" + newTopic.getHash();
 	}
 
 	@GetMapping("{hash}/edit")
 	public String edit(@PathVariable String hash, TopicForm topicForm, Model viewData) {
-		Topic topic = topicService.findOne(hash);
+		Topic topic = topicService.findTopic(hash);
 		BeanUtil.copy(topic, topicForm);
 		viewData.addAttribute(topic);
 		return "topics/edit";
@@ -92,11 +89,11 @@ public class TopicsController {
 			Model viewData,
 			RedirectAttributes redirectAttr) {
 		if (result.hasErrors()) {
-			Topic topic = topicService.findOne(hash);
+			Topic topic = topicService.findTopic(hash);
 			viewData.addAttribute(topic);
 			return "topics/edit";
 		}
-		Topic updatedTopic = topicService.update(topicForm, hash);
+		Topic updatedTopic = topicService.updateTopic(topicForm, hash);
 		viewData.addAttribute(updatedTopic);
 		redirectAttr.addFlashAttribute(AppConstants.NoticeMessage.Info, "トピックの内容を更新しました");
 		return "redirect:/topics/" + hash;
@@ -104,7 +101,7 @@ public class TopicsController {
 
 	@DeleteMapping("{hash}")
 	public String delete(@PathVariable String hash, RedirectAttributes redirectAttr) {
-		Topic deletedTopic = topicService.delete(hash);
+		Topic deletedTopic = topicService.deleteTopic(hash);
 		redirectAttr.addFlashAttribute(AppConstants.NoticeMessage.Info, "トピック「" + deletedTopic.getTitle() + "」を削除しました");
 		return "redirect:/";
 	}

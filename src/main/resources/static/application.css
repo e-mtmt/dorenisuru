@@ -19,6 +19,7 @@ footer {
   color: #cccccc;
   font-size: 90%;
   opacity: 0.9;
+  z-index: 99999;
 }
 
 .noticeMessage {
@@ -96,6 +97,24 @@ footer {
   margin: 50px;
 }
 
-.topic-comment {
-  background-color: #fffff0;
+.vote-table-frame {
+  background-color: #f5f5f5;
+}
+
+.vote-table-frame th:first-child {
+  white-space: nowrap;
+}
+
+.vote-table-choices-text {
+  white-space: normal !important;
+}
+
+@media (min-width: 400px) {
+  .vote-table-choices-buttons {
+    width: 60%;
+  }
+}
+
+.btn-group > .btn.active {
+   border: solid 2px #d67f5e;
 }

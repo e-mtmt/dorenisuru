@@ -65,7 +65,7 @@ public class VotersController {
 			Model viewData,
 			RedirectAttributes redirectAttr) {
 		if (result.hasErrors()) return add(topicHash, voteForm, viewData);
-		topicService.addVote(topicHash, voteForm);
+		topicService.createVote(topicHash, voteForm);
 		redirectAttr.addFlashAttribute(AppConstants.NoticeMessage.Info, "トピックに回答しました");
 		return "redirect:/topics/" + topicHash;
 	}
