@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jp.eunika.dorenisuru.common.util.BeanUtil;
+import jp.eunika.dorenisuru.common.util.Tuple2;
 import jp.eunika.dorenisuru.domain.entity.Choice;
 import jp.eunika.dorenisuru.domain.entity.Topic;
 import jp.eunika.dorenisuru.domain.entity.Voter;
@@ -20,6 +21,7 @@ import jp.eunika.dorenisuru.domain.entity.VoterChoice;
 import jp.eunika.dorenisuru.domain.repository.ChoiceRepository;
 import jp.eunika.dorenisuru.domain.repository.TopicRepository;
 import jp.eunika.dorenisuru.domain.repository.VoterRepository;
+import jp.eunika.dorenisuru.web.data.VoteSummary;
 import jp.eunika.dorenisuru.web.form.TopicForm;
 import jp.eunika.dorenisuru.web.form.VoteForm;
 
@@ -37,6 +39,22 @@ public class TopicService {
 		Topic topic = topicRepository.findByHash(hash);
 		if (topic == null) throw new EntityNotFoundException("トピックが存在しません [hash: " + hash + "]");
 		return topic;
+	}
+
+	public Tuple2<Topic, VoteSummary> makeShowableTopicData(String topicHash) {
+		Topic topic = this.findOne(topicHash);
+		VoteSummary voteSummary = new VoteSummary();
+		Map<Integer, List<VoterChoice.Feeling>> feelingsByChoice = topic.getChoices().stream().collect(
+				Collectors.toMap(Choice::getId, choice -> topic.getVoters().stream().map(voter -> {
+					return choice.getVoterChoices()
+							.stream()
+							.filter(voterChoice -> voterChoice.getChoice().equals(choice) && voterChoice.getVoter().equals(voter))
+							.findFirst()
+							.map(VoterChoice::getFeeling)
+							.orElse(VoterChoice.Feeling.Unknown);
+				}).collect(Collectors.toList())));
+		voteSummary.setFeelingsByChoice(feelingsByChoice);
+		return Tuple2.of(topic, voteSummary);
 	}
 
 	public Topic create(TopicForm topicForm) {
@@ -85,8 +103,11 @@ public class TopicService {
 	public Voter makeEditableVoteData(String topicHash, String voterId, VoteForm voteForm) {
 		Voter voter = this.findVoter(voterId);
 		BeanUtil.copy(voter, voteForm);
-		Map<Integer, VoterChoice.Feeling> choiceFeelings = voter.getVoterChoices().stream().collect(
-				Collectors.toMap(voterChoice -> voterChoice.getChoice().getId(), VoterChoice::getFeeling));
+		Map<Integer, VoterChoice.Feeling> choiceFeelings = voter.getTopic().getChoices().stream().collect(
+				Collectors.toMap(
+						Choice::getId,
+						choice -> choice.getVoterChoice(voter.getId()).map(VoterChoice::getFeeling).orElse(
+								VoterChoice.Feeling.Unknown)));
 		voteForm.setChoiceFeelings(choiceFeelings);
 		return voter;
 	}

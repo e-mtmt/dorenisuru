@@ -2,6 +2,7 @@ package jp.eunika.dorenisuru.domain.entity;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -69,5 +70,9 @@ public class Choice {
 	@PreUpdate
 	public void preUpdate() {
 		this.updatedAt = LocalDateTime.now();
+	}
+
+	public Optional<VoterChoice> getVoterChoice(Integer voterId) {
+		return voterChoices.stream().filter(voterChoice -> voterChoice.getVoter().getId() == voterId).findAny();
 	}
 }

@@ -9,42 +9,44 @@
       <div class="container">
         <div class="page-header">
           <h2 th:text="${topic.title}"><i class="fa fa-comment-o"></i>トピックのタイトル</h2>
+          <div class="text-left"><span class="label label-default">回答数：<span th:text="${topic.voters.size()}"></span></span></div>
         </div>
         <div class="well" th:unless="${#strings.isEmpty(topic.contents)}" th:utext="${#h.br(topic.contents)}">
           トピックのコンテンツ
         </div>
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th>選択候補</th>
-              <th th:each="voter : ${topic.voters}">
-                <a th:href="@{/topics/{topicHash}/voters/{id}/edit(topicHash=${topic.hash}, id=${voter.id})}">
-                  <span th:text="${voter.name}"></span>
-                </a>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr th:each="choice : ${topic.choices}">
-              <td th:text="${choice.text}">1/1(月)</td>
-              <th:block th:each="voter : ${topic.voters}">
-                <th:block th:each="voterChoice : ${voter.voterChoices}">
-                  <th:block th:if="${(voterChoice.choice.id == choice.id)}">
-                    <td class="text-center">
-                      <div th:if="${#strings.equals(voterChoice.feeling, 'OK')}"><i class="fa fa-lg fa-thumbs-o-up text-info"></i></div>
-                      <div th:if="${#strings.equals(voterChoice.feeling, 'NG')}"><i class="fa fa-lg fa-thumbs-o-down text-danger"></i></div>
-                      <div th:if="${#strings.equals(voterChoice.feeling, 'Unknown')}"><i class="fa fa-lg fa-minus text-muted"></i></div>
-                    </td>
-                  </th:block>
+        <div class="text-right">
+          <small class="text-muted"><i class="fa fa-hand-o-right"></i>回答の変更は名前をクリックしてね！</small>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>選択候補</th>
+                <th th:each="voter : ${topic.voters}">
+                  <a th:href="@{/topics/{topicHash}/voters/{id}/edit(topicHash=${topic.hash}, id=${voter.id})}">
+                    <span th:text="${voter.name}"></span>
+                  </a>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="choice : ${topic.choices}">
+                <td th:text="${choice.text}">1/1(月)</td>
+                <th:block th:each="feeling : ${voteSummary.getFeelings(choice.id)}">
+                  <td class="text-center" th:switch="${feeling.name()}">
+                    <div th:case="${'OK'}"><i class="fa fa-lg fa-thumbs-o-up text-info"></i></div>
+                    <div th:case="${'NG'}"><i class="fa fa-lg fa-thumbs-o-down text-danger"></i></div>
+                    <div th:case="${'Unknown'}"><i class="fa fa-lg fa-minus text-muted"></i></div>
+                  </td>
                 </th:block>
-              </th:block>
-            </tr>
-            <tr>
-              <td class="topic-comment text-right"><i class="fa fa-commenting-o"></i>コメント</td>
-              <td th:each="voter : ${topic.voters}" th:text="${voter.comment}">楽しみにしてます！</td>
-            </tr>
-          </tbody>
-        </table>
+              </tr>
+              <tr>
+                <td class="topic-comment text-right"><i class="fa fa-commenting-o"></i>コメント</td>
+                <td th:each="voter : ${topic.voters}" th:text="${voter.comment}">楽しみにしてます！</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
         <a th:href="@{/topics/{hash}/voters/add(hash=${topic.hash})}" class="btn btn-primary">
           <i class="fa fa-comments-o"></i>回答する
         </a>
