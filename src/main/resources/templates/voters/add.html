@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorate="layout">
+  <head>
+  </head>
+  <body>
+    <div layout:fragment="contents">
+      <div class="container">
+        <div class="page-header">
+          <h2><i class="fa fa-comments-o"></i>トピックへの回答</h2>
+          <small class="text-muted">名前を記入して、候補から希望を選択してね！</small>
+        </div>
+        <form class="form-horizontal"
+              th:action="@{/topics/{topicHash}/voters(topicHash=${topic.hash})}"
+              th:object="${voteForm}"
+              th:method="post">
+          <div class="col-md-12">
+            <div th:replace="voters/_voters-form :: form"></div>
+            <div class="form-group">
+              <div class="col-md-offset-2 col-md-10 stackableHorizontal">
+                <button type="submit" class="btn btn-primary"><i class="fa fa-comments-o"></i>回答する</button>
+                <a th:href="@{/topics/{hash}(hash=${topic.hash})}" class="btn btn-default"><i class="fa fa-undo"></i>キャンセル</a>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

@@ -2,6 +2,7 @@ package jp.eunika.dorenisuru.service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -18,7 +19,7 @@ import jp.eunika.dorenisuru.domain.entity.Voter;
 import jp.eunika.dorenisuru.domain.entity.VoterChoice;
 import jp.eunika.dorenisuru.domain.repository.ChoiceRepository;
 import jp.eunika.dorenisuru.domain.repository.TopicRepository;
-import jp.eunika.dorenisuru.domain.repository.VoterChoiceRepository;
+import jp.eunika.dorenisuru.domain.repository.VoterRepository;
 import jp.eunika.dorenisuru.web.form.TopicForm;
 import jp.eunika.dorenisuru.web.form.VoteForm;
 
@@ -30,7 +31,7 @@ public class TopicService {
 	@Autowired
 	private ChoiceRepository choiceRepository;
 	@Autowired
-	private VoterChoiceRepository voterChoiceRepository;
+	private VoterRepository voterRepository;
 
 	public Topic findOne(String hash) {
 		Topic topic = topicRepository.findByHash(hash);
@@ -65,9 +66,34 @@ public class TopicService {
 		return topic;
 	}
 
+	public Voter findVoter(String voterId) {
+		Voter voter = voterRepository.findOne(Integer.valueOf(voterId));
+		if (voter == null) throw new EntityNotFoundException("回答が存在しません [id: " + voterId + "]");
+		return voter;
+	}
+
+	public Topic makeAddableVoteData(String topicHash, VoteForm voteForm) {
+		Topic topic = this.findOne(topicHash);
+		if (voteForm.getChoiceFeelings() == null) {
+			Map<Integer, VoterChoice.Feeling> choiceFeelings = topic.getChoices().stream().collect(
+					Collectors.toMap(Choice::getId, choice -> VoterChoice.Feeling.Unknown));
+			voteForm.setChoiceFeelings(choiceFeelings);
+		}
+		return topic;
+	}
+
+	public Voter makeEditableVoteData(String topicHash, String voterId, VoteForm voteForm) {
+		Voter voter = this.findVoter(voterId);
+		BeanUtil.copy(voter, voteForm);
+		Map<Integer, VoterChoice.Feeling> choiceFeelings = voter.getVoterChoices().stream().collect(
+				Collectors.toMap(voterChoice -> voterChoice.getChoice().getId(), VoterChoice::getFeeling));
+		voteForm.setChoiceFeelings(choiceFeelings);
+		return voter;
+	}
+
 	public void addVote(String topicHash, VoteForm voteForm) {
 		Topic topic = this.findOne(topicHash);
-		Voter voter = Voter.of(voteForm.getVoterName(), voteForm.getVoteComment(), topic);
+		Voter voter = Voter.of(voteForm.getName(), voteForm.getComment(), topic);
 		topic.getVoters().add(voter);
 		List<VoterChoice> voterChoices = voteForm.getChoiceFeelings()
 				.entrySet()
@@ -76,6 +102,26 @@ public class TopicService {
 				.collect(Collectors.toList());
 		voter.setVoterChoices(voterChoices);
 		topicRepository.save(topic);
+	}
+
+	public void updateVote(String topicHash, String voterId, VoteForm voteForm) {
+		Voter voter = this.findVoter(voterId);
+		BeanUtil.copy(voteForm, voter);
+		voter.getVoterChoices().clear();
+		voterRepository.saveAndFlush(voter);
+		Topic topic = this.findOne(topicHash);
+		List<VoterChoice> voterChoices = voteForm.getChoiceFeelings()
+				.entrySet()
+				.stream()
+				.map(entry -> VoterChoice.of(entry.getValue(), voter, topic.getChoice(entry.getKey())))
+				.collect(Collectors.toList());
+		voter.getVoterChoices().addAll(voterChoices);
+		voterRepository.saveAndFlush(voter);
+	}
+
+	public void deleteVote(String voterId) {
+		Voter voter = this.findVoter(voterId);
+		voterRepository.delete(voter);
 	}
 
 	private List<Choice> buildChoicesByText(Topic topic, String choiceText) {

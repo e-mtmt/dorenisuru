@@ -17,7 +17,11 @@
           <thead>
             <tr>
               <th>選択候補</th>
-              <th th:each="voter : ${topic.voters}" th:text="${voter.name}">mtmt</th>
+              <th th:each="voter : ${topic.voters}">
+                <a th:href="@{/topics/{topicHash}/voters/{id}/edit(topicHash=${topic.hash}, id=${voter.id})}">
+                  <span th:text="${voter.name}"></span>
+                </a>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -36,14 +40,14 @@
               </th:block>
             </tr>
             <tr>
-              <td class="topic-comment text-right"><i class="fa fa-comments-o"></i>コメント</td>
+              <td class="topic-comment text-right"><i class="fa fa-commenting-o"></i>コメント</td>
               <td th:each="voter : ${topic.voters}" th:text="${voter.comment}">楽しみにしてます！</td>
             </tr>
           </tbody>
         </table>
-        <button data-toggle="modal" data-target="#add-vote-modal" class="btn btn-primary">
-          <i class="fa fa-external-link"></i>回答する
-        </button>
+        <a th:href="@{/topics/{hash}/voters/add(hash=${topic.hash})}" class="btn btn-primary">
+          <i class="fa fa-comments-o"></i>回答する
+        </a>
         <hr />
         <div class="panel panel-default">
           <div class="panel-heading"><i class="fa fa-bookmark-o"></i>このトピックのURL</div>
@@ -70,7 +74,6 @@
           </form>
         </div>
       </div>
-      <div th:replace="topics/_vote-modal-dialog :: dialog"></div>
     </div>
   </body>
 </html>

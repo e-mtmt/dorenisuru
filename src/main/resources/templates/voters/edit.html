@@ -1,0 +1,37 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorate="layout">
+  <head>
+  </head>
+  <body>
+    <div layout:fragment="contents">
+      <div class="container">
+        <div class="page-header">
+          <h2><i class="fa fa-comments-o"></i>回答の更新</h2>
+        </div>
+        <form class="form-horizontal"
+              th:action="@{/topics/{topicHash}/voters/{id}(topicHash=${topic.hash}, id=${voter.id})}"
+              th:object="${voteForm}"
+              th:method="patch">
+          <div class="col-md-12">
+            <div th:replace="voters/_voters-form :: form"></div>
+            <div class="form-group">
+              <div class="col-md-offset-2 col-md-10 stackableHorizontal">
+                <button type="submit" class="btn btn-primary"><i class="fa fa-comments-o"></i>回答を更新する</button>
+                <a th:href="@{/topics/{hash}(hash=${topic.hash})}" class="btn btn-default"><i class="fa fa-undo"></i>キャンセル</a>
+                <button type="submit" form="delete-vote-form" class="btn btn-danger" onclick="return confirm('削除しますか？');">
+                  <i class="fa fa-times"></i>回答を削除する
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+        <form id="delete-vote-form"
+              th:action="@{/topics/{topicHash}/voters/{id}(topicHash=${topic.hash}, id=${voter.id})}"
+              th:method="delete">
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

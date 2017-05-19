@@ -14,10 +14,10 @@ import lombok.Data;
 public class VoteForm {
 	@NotBlank
 	@Size(max = 20, message = "{validation.Size.max}")
-	private String voterName;
+	private String name;
 
 	@Size(max = 50, message = "{validation.Size.max}")
-	private String voteComment;
+	private String comment;
 
 	@NotEmpty
 	private Map<Integer, VoterChoice.Feeling> choiceFeelings;
