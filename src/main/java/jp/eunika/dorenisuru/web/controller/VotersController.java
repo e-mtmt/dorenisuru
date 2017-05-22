@@ -44,16 +44,15 @@ public class VotersController {
 
 	@GetMapping("add")
 	public String add(@PathVariable String topicHash, VoteForm voteForm, Model viewData) {
-		Topic topic = topicService.makeAddableVoteData(topicHash, voteForm);
+		Topic topic = topicService.prepareAddableVoteData(topicHash, voteForm);
 		viewData.addAttribute(topic);
 		return "voters/add";
 	}
 
 	@GetMapping("{id}/edit")
 	public String edit(@PathVariable String topicHash, @PathVariable String id, VoteForm voteForm, Model viewData) {
-		Voter voter = topicService.makeEditableVoteData(topicHash, id, voteForm);
-		viewData.addAttribute(voter.getTopic());
-		viewData.addAttribute(voter);
+		Voter voter = topicService.prepareEditableVoteData(topicHash, id, voteForm);
+		viewData.addAttribute(voter.getTopic()).addAttribute(voter);
 		return "voters/edit";
 	}
 

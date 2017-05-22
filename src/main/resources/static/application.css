@@ -1,3 +1,4 @@
+/* ---------- global ---------- */
 html, body {
   height: 100%;
   padding-top: 25px;
@@ -35,15 +36,6 @@ footer {
   margin: 20px;
 }
 
-.btn {
-  padding-left: 2.5rem;
-  padding-right: 2.5rem;
-}
-
-.fa {
-  margin-right: 1rem;
-}
-
 .notes {
   display: block;
 }
@@ -58,7 +50,20 @@ footer {
   margin-bottom: 10px;
 }
 
-/* ---------- bootstrap-override ---------- */
+/* ---------- default-css-override (bootstrap, font-awesome) ---------- */
+.btn {
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
+}
+
+.fa {
+  margin-right: 1rem;
+}
+
+.btn-group > .btn.active {
+   border: solid 2px #d67f5e;
+}
+
 @media (max-width: 991px) {
   .form-horizontal .control-label {
     text-align: left;
@@ -66,11 +71,15 @@ footer {
 }
 
 /* ---------- by page ---------- */
-.top-carouselScreen .item {
+.top_suggest {
+  margin: 50px;
+}
+
+.top_carouselScreen .item {
   height: 300px;
 }
 
-.top-carouselScreen img {
+.top_carouselScreen img {
   position: absolute;
   width: 100%;
 }
@@ -93,28 +102,20 @@ footer {
   }
 }
 
-.top-suggest {
-  margin: 50px;
-}
-
-.vote-table-frame {
+.topics_voteTableFrame {
   background-color: #f5f5f5;
 }
 
-.vote-table-frame th:first-child {
+.topics_voteTableFrame th:first-child {
   white-space: nowrap;
 }
 
-.vote-table-choices-text {
+.voters_voteTableChoicesText {
   white-space: normal !important;
 }
 
 @media (min-width: 400px) {
-  .vote-table-choices-buttons {
+  .voters_voteTableChoicesButtons {
     width: 60%;
   }
-}
-
-.btn-group > .btn.active {
-   border: solid 2px #d67f5e;
 }

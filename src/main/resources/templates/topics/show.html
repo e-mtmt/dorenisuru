@@ -25,7 +25,7 @@
         <div class="table-responsive">
           <table class="table table-bordered">
             <thead>
-              <tr class="vote-table-frame">
+              <tr class="topics_voteTableFrame">
                 <th>選択候補<small class="text-muted">（OK率）</small></th>
                 <th class="text-center" th:each="voter : ${topic.voters}">
                   <a th:href="@{/topics/{topicHash}/voters/{id}/edit(topicHash=${topic.hash}, id=${voter.id})}">
@@ -51,7 +51,7 @@
                 </tr>
               </th:block>
               <tr th:unless="${#lists.isEmpty(topic.voters)}">
-                <th class="text-right vote-table-frame"><i class="fa fa-commenting-o"></i>コメント</th>
+                <th class="text-right topics_voteTableFrame"><i class="fa fa-commenting-o"></i>コメント</th>
                 <td th:each="voter : ${topic.voters}" th:text="${voter.comment}">楽しみにしてます！</td>
               </tr>
             </tbody>

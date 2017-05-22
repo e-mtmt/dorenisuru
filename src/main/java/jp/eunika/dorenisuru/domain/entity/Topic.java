@@ -50,6 +50,9 @@ public class Topic {
 	@Column(nullable = false, updatable = false)
 	private LocalDateTime createdAt;
 
+	@Column
+	private LocalDateTime lastAccessedAt;
+
 	@Column(nullable = false)
 	private LocalDateTime updatedAt;
 

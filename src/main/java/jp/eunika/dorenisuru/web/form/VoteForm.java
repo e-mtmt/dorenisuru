@@ -7,7 +7,7 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import jp.eunika.dorenisuru.domain.entity.VoterChoice;
+import jp.eunika.dorenisuru.domain.entity.VoterChoice.Feeling;
 import lombok.Data;
 
 @Data
@@ -20,5 +20,5 @@ public class VoteForm {
 	private String comment;
 
 	@NotEmpty
-	private Map<Integer, VoterChoice.Feeling> choiceFeelings;
+	private Map<Integer, Feeling> choiceFeelings;
 }

@@ -1,5 +1,6 @@
 package jp.eunika.dorenisuru.service;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import jp.eunika.dorenisuru.domain.entity.Choice;
 import jp.eunika.dorenisuru.domain.entity.Topic;
 import jp.eunika.dorenisuru.domain.entity.Voter;
 import jp.eunika.dorenisuru.domain.entity.VoterChoice;
+import jp.eunika.dorenisuru.domain.entity.VoterChoice.Feeling;
 import jp.eunika.dorenisuru.domain.misc.VoteSummary;
 import jp.eunika.dorenisuru.domain.repository.ChoiceRepository;
 import jp.eunika.dorenisuru.domain.repository.TopicRepository;
@@ -41,10 +43,18 @@ public class TopicService {
 		return topic;
 	}
 
-	public Tuple2<Topic, VoteSummary> makeShowableTopicData(String topicHash) {
+	public Tuple2<Topic, VoteSummary> prepareShowableTopicData(String topicHash) {
 		Topic topic = this.findTopic(topicHash);
+		topic.setLastAccessedAt(LocalDateTime.now());
+		topicRepository.saveAndFlush(topic);
 		VoteSummary voteSummary = VoteSummary.of(topic);
 		return Tuple2.of(topic, voteSummary);
+	}
+
+	public Topic prepareEditableTopicData(String topicHash, TopicForm topicForm) {
+		Topic topic = this.findTopic(topicHash);
+		BeanUtil.copy(topic, topicForm);
+		return topic;
 	}
 
 	public Topic createTopic(TopicForm topicForm) {
@@ -80,24 +90,23 @@ public class TopicService {
 		return voter;
 	}
 
-	public Topic makeAddableVoteData(String topicHash, VoteForm voteForm) {
+	public Topic prepareAddableVoteData(String topicHash, VoteForm voteForm) {
 		Topic topic = this.findTopic(topicHash);
 		if (voteForm.getChoiceFeelings() == null) {
-			Map<Integer, VoterChoice.Feeling> choiceFeelings = topic.getChoices().stream().collect(
-					Collectors.toMap(Choice::getId, choice -> VoterChoice.Feeling.Unknown));
+			Map<Integer, Feeling> choiceFeelings = topic.getChoices().stream().collect(
+					Collectors.toMap(Choice::getId, choice -> Feeling.Unknown));
 			voteForm.setChoiceFeelings(choiceFeelings);
 		}
 		return topic;
 	}
 
-	public Voter makeEditableVoteData(String topicHash, String voterId, VoteForm voteForm) {
+	public Voter prepareEditableVoteData(String topicHash, String voterId, VoteForm voteForm) {
 		Voter voter = this.findVoter(voterId);
 		BeanUtil.copy(voter, voteForm);
-		Map<Integer, VoterChoice.Feeling> choiceFeelings = voter.getTopic().getChoices().stream().collect(
+		Map<Integer, Feeling> choiceFeelings = voter.getTopic().getChoices().stream().collect(
 				Collectors.toMap(
 						Choice::getId,
-						choice -> choice.getVoterChoice(voter.getId()).map(VoterChoice::getFeeling).orElse(
-								VoterChoice.Feeling.Unknown)));
+						choice -> choice.getVoterChoice(voter.getId()).map(VoterChoice::getFeeling).orElse(Feeling.Unknown)));
 		voteForm.setChoiceFeelings(choiceFeelings);
 		return voter;
 	}

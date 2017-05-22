@@ -21,6 +21,7 @@ import jp.eunika.dorenisuru.domain.entity.Choice;
 import jp.eunika.dorenisuru.domain.entity.Topic;
 import jp.eunika.dorenisuru.domain.entity.Voter;
 import jp.eunika.dorenisuru.domain.entity.VoterChoice;
+import jp.eunika.dorenisuru.domain.entity.VoterChoice.Feeling;
 import jp.eunika.dorenisuru.domain.repository.ChoiceRepository;
 import jp.eunika.dorenisuru.domain.repository.TopicRepository;
 import jp.eunika.dorenisuru.domain.repository.VoterChoiceRepository;
@@ -58,7 +59,7 @@ public class RepositoryTests {
 		newTopic.setVoters(voterNames.stream().map(name -> Voter.of(name, "コメント", newTopic)).collect(Collectors.toList()));
 		newTopic.getChoices().forEach(choice -> {
 			choice.setVoterChoices(
-					newTopic.getVoters().stream().map(voter -> VoterChoice.of(VoterChoice.Feeling.OK, voter, choice)).collect(
+					newTopic.getVoters().stream().map(voter -> VoterChoice.of(Feeling.OK, voter, choice)).collect(
 							Collectors.toList()));
 		});
 		topicRepository.save(newTopic);

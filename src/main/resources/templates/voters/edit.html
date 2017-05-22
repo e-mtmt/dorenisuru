@@ -8,8 +8,10 @@
     <div layout:fragment="contents">
       <div class="container">
         <div class="page-header">
-          <h3><i class="fa fa-comments-o"></i>『<span th:text="${topic.title}">トピック</span>』への回答の編集</h3>
-          <small class="text-muted">内容を編集して更新してね！</small>
+          <h3>
+            <i class="fa fa-comments-o"></i>
+            『<span th:text="${topic.title}">トピック</span>』への<span th:text="${voter.name}">mtmt</span>さんの回答
+          </h3>
         </div>
         <form class="form-horizontal"
               th:action="@{/topics/{topicHash}/voters/{id}(topicHash=${topic.hash}, id=${voter.id})}"
