@@ -1,0 +1,29 @@
+box: akivancg/wercker-springboot
+
+services:
+   - id: postgres
+     env:
+       POSTGRES_PASSWORD: $APP_POSTGRES_PASSWORD
+
+build:
+  steps:
+    - script:
+        name: setup mvn local repo
+        code: |-
+          mkdir -p $WERCKER_CACHE_DIR/.m2
+          ln -sf $WERCKER_CACHE_DIR/.m2 ~/.m2
+    - script:
+        name: devnull
+        code: |-
+          echo noop
+#    - xenoterracide/maven:
+#        goals: test
+#    - script:
+#        name: run test
+#        code: |-
+#          ./mvnw test
+    - script:
+        name: show cache size
+        code: |-
+          ls -la $WERCKER_CACHE_DIR
+          du -sh $WERCKER_CACHE_DIR
