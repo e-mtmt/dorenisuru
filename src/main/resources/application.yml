@@ -14,3 +14,4 @@ logging:
 
 app:
   bugsnag-api-key: b34e48f13375dc94b1deb4c5848a5ac7
+  effective-days-of-topics: 30

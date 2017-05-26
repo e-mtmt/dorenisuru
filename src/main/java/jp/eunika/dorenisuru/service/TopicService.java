@@ -10,9 +10,12 @@ import java.util.stream.Stream;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jp.eunika.dorenisuru.common.util.AppProperties;
 import jp.eunika.dorenisuru.common.util.BeanUtil;
 import jp.eunika.dorenisuru.common.util.Tuple2;
 import jp.eunika.dorenisuru.domain.entity.Choice;
@@ -30,6 +33,10 @@ import jp.eunika.dorenisuru.web.form.VoteForm;
 @Service
 @Transactional
 public class TopicService {
+	private static final Logger log = LoggerFactory.getLogger(TopicService.class);
+
+	@Autowired
+	private AppProperties appProperties;
 	@Autowired
 	private TopicRepository topicRepository;
 	@Autowired
@@ -142,6 +149,23 @@ public class TopicService {
 	public void deleteVote(String voterId) {
 		Voter voter = this.findVoter(voterId);
 		voterRepository.delete(voter);
+	}
+
+	public void cleanExpiredTopics() {
+		int effectiveDaysOfTopics = appProperties.getEffectiveDaysOfTopics();
+		List<Topic> expiredTopics = topicRepository
+				.findByLastAccessedAtLessThan(LocalDateTime.now().minusDays(effectiveDaysOfTopics));
+		long beforeTopicsCount = topicRepository.count();
+		expiredTopics.stream().forEach(topicRepository::delete);
+		topicRepository.flush();
+		long afterTopicsCount = topicRepository.count();
+		String report = String.format(
+				"ℹ️ %s日以上アクセスのないトピックを削除しました - トピック数(処理前): %s, 期限切れトピック数: %s, トピック数(処理後): %s",
+				effectiveDaysOfTopics,
+				beforeTopicsCount,
+				expiredTopics.size(),
+				afterTopicsCount);
+		log.info(report);
 	}
 
 	private List<Choice> buildChoicesByText(Topic topic, String choiceText) {

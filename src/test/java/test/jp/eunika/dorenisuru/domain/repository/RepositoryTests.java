@@ -2,6 +2,7 @@ package test.jp.eunika.dorenisuru.domain.repository;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import jp.eunika.dorenisuru.Application;
+import jp.eunika.dorenisuru.common.util.AppProperties;
 import jp.eunika.dorenisuru.domain.entity.Choice;
 import jp.eunika.dorenisuru.domain.entity.Topic;
 import jp.eunika.dorenisuru.domain.entity.Voter;
@@ -30,6 +32,8 @@ import jp.eunika.dorenisuru.domain.repository.VoterRepository;
 @SpringBootTest(classes = Application.class)
 @Transactional
 public class RepositoryTests {
+	@Autowired
+	private AppProperties appProperties;
 	@Autowired
 	private TopicRepository topicRepository;
 	@Autowired
@@ -86,5 +90,20 @@ public class RepositoryTests {
 
 		topicRepository.delete(newTopic);
 		assertThat(topicRepository.count()).isEqualTo(0);
+	}
+
+	@Test
+	public void findExpiredTopics() {
+		LocalDateTime now = LocalDateTime.now();
+		int effectiveDays = appProperties.getEffectiveDaysOfTopics();
+		Topic topic1 = Topic.of("テストトピック１", "内容１");
+		Topic topic2 = Topic.of("テストトピック２", "内容２");
+		Topic topic3 = Topic.of("テストトピック３", "内容３");
+		topic1.setLastAccessedAt(now.minusDays(effectiveDays + 1));
+		topic2.setLastAccessedAt(now.minusDays(effectiveDays));
+		topic3.setLastAccessedAt(now.minusDays(effectiveDays - 1));
+		topicRepository.save(Arrays.asList(topic1, topic2, topic3));
+		List<Topic> expiredTopics = topicRepository.findByLastAccessedAtLessThan(now.minusDays(effectiveDays));
+		assertThat(expiredTopics.size()).isEqualTo(1);
 	}
 }

@@ -10,4 +10,5 @@ import lombok.Data;
 @Data
 public class AppProperties {
 	private String bugsnagApiKey;
+	private int effectiveDaysOfTopics;
 }
