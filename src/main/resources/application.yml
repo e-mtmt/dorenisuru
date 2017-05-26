@@ -9,5 +9,8 @@ spring:
 
 logging:
   level:
-    jdbc: off
+    jdbc: false
     jdbc.sqltiming: debug
+
+app:
+  bugsnag-api-key: b34e48f13375dc94b1deb4c5848a5ac7
