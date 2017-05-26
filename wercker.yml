@@ -3,7 +3,8 @@ box: akivancg/wercker-springboot
 services:
    - id: postgres
      env:
-       POSTGRES_PASSWORD: $APP_POSTGRES_PASSWORD
+       POSTGRES_USER: ciuser
+       POSTGRES_PASSWORD: $POSTGRES_PASSWORD
 
 build:
   steps:
@@ -12,16 +13,9 @@ build:
         code: |-
           mkdir -p $WERCKER_CACHE_DIR/.m2
           ln -sf $WERCKER_CACHE_DIR/.m2 ~/.m2
-    - script:
-        name: devnull
-        code: |-
-          echo noop
-#    - xenoterracide/maven:
-#        goals: test
-#    - script:
-#        name: run test
-#        code: |-
-#          ./mvnw test
+    - xenoterracide/maven:
+        name: execute test
+        goals: -Dspring.profiles.active=ci test
     - script:
         name: show cache size
         code: |-

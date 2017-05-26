@@ -1,0 +1,7 @@
+spring:
+  profiles.active: ci
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${POSTGRES_PORT_5432_TCP_ADDR}:5432/${POSTGRES_ENV_POSTGRES_USER}
+    username: ${POSTGRES_ENV_POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
