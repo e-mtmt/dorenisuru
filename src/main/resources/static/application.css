@@ -25,6 +25,7 @@ footer {
 
 .noticeMessage {
   margin-bottom: 0;
+  display: none;
 }
 
 .errorPagePanel {

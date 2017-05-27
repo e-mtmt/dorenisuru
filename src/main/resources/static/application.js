@@ -1,4 +1,6 @@
 $(function() {
+	$(".noticeMessage").fadeIn("slow");
+
 	$(":radio[id^=choiceFeelings]:checked").parent("label").addClass("active");
 
 	$("[data-toggle='tooltip']").tooltip({
