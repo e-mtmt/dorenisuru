@@ -85,6 +85,10 @@
             </button>
           </form>
         </div>
+        <hr />
+        <small class="text-muted">
+          <i class="fa fa-exclamation-triangle"></i><span th:text="${@appProperties.effectiveDaysOfTopics}"></span>日以上アクセスのないトピックは自動で削除されます
+        </small>
       </div>
     </div>
   </body>
