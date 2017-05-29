@@ -67,6 +67,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 	@Bean
 	public EmbeddedServletContainerCustomizer servletContainerCustomizer() {
 		return (servletContainer) -> {
+			servletContainer.addErrorPages(new ErrorPage(HttpStatus.FORBIDDEN, "/403"));
 			servletContainer.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, "/404"));
 		};
 	}

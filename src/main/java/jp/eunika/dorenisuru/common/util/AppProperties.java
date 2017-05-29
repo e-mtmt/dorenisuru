@@ -9,6 +9,7 @@ import lombok.Data;
 @ConfigurationProperties(prefix = "app")
 @Data
 public class AppProperties {
-	private String bugsnagApiKey;
 	private int effectiveDaysOfTopics;
+	private String bugsnagApiKey;
+	private String encryptKey;
 }

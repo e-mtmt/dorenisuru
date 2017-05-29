@@ -1,5 +1,9 @@
 package jp.eunika.dorenisuru.common.aop;
 
+import static jp.eunika.dorenisuru.common.util.CollectionsUtil.*;
+
+import java.util.List;
+
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 
@@ -19,6 +23,10 @@ import lombok.extern.slf4j.Slf4j;
 @Aspect
 @Slf4j
 public class HandleExceptionAspect {
+	private static final List<Class<? extends Throwable>> unnotifyExceptions = $list(
+			EntityNotFoundException.class,
+			SecurityException.class);
+
 	@Autowired
 	private AppProfile appProfile;
 	@Autowired
@@ -41,7 +49,7 @@ public class HandleExceptionAspect {
 			request.setAttribute("ERROR_LOGGED", true);
 
 			if (appProfile.isProduction()) {
-				if (!EntityNotFoundException.class.isInstance(exception)) {
+				if (unnotifyExceptions.stream().noneMatch(cls -> cls.isInstance(exception))) {
 					new Bugsnag(appProperties.getBugsnagApiKey()).notify(exception);
 				}
 			}

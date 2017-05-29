@@ -7,6 +7,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 public abstract class ApplicationController {
+	@ExceptionHandler(SecurityException.class)
+	@ResponseStatus(HttpStatus.FORBIDDEN)
+	public String handleSecurityException() {
+		return "error-403";
+	}
+
 	@ExceptionHandler(EntityNotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public String handleEntityNotFoundException() {

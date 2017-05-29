@@ -40,10 +40,20 @@ footer {
 .notes {
   display: block;
 }
+.notes dl {
+  width: 100%;
+}
+.notes dt {
+  float: left;
+}
+.notes dd {
+  margin-left: 2rem;
+}
 
 .stackableHorizontal {
   display: flex;
   flex-wrap: wrap;
+  margin-bottom: 20px;
 }
 
 .stackableHorizontal .btn {
@@ -62,7 +72,7 @@ footer {
 }
 
 .btn-group > .btn.active {
-   border: solid 2px #d67f5e;
+  border: solid 2px #d67f5e;
 }
 
 @media (max-width: 991px) {

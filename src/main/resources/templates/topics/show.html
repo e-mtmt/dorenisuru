@@ -64,7 +64,7 @@
         <div class="panel panel-default">
           <div class="panel-heading"><i class="fa fa-bookmark-o"></i>このトピックのURL</div>
           <div class="panel-body">
-            <small class="text-muted notes">URLをみんなに共有しよう！</small>
+            <div class="small text-muted">URLをみんなに共有しよう！</div>
             <div class="form-group has-feedback">
               <input type="text"
                      id="topic-url"
@@ -75,7 +75,7 @@
             </div>
           </div>
         </div>
-        <div class="stackableHorizontal">
+        <div class="stackableHorizontal" th:if="${topicOwner}">
           <a class="btn btn-default" th:href="@{/topics/{hash}/edit(hash=${topic.hash})}">
             <i class="fa fa-pencil"></i>このトピックを編集する
           </a>
@@ -85,10 +85,12 @@
             </button>
           </form>
         </div>
-        <hr />
-        <small class="text-muted">
-          <i class="fa fa-exclamation-triangle"></i><span th:text="${@appProperties.effectiveDaysOfTopics}"></span>日以上アクセスのないトピックは自動で削除されます
-        </small>
+        <dl class="small text-info notes">
+          <dt><i class="fa fa-check"></i></dt>
+          <dd><span th:text="${@appProperties.effectiveDaysOfTopics}"></span>日以上アクセスのないトピックは自動で削除されます。</dd>
+          <dt><i class="fa fa-check"></i></dt>
+          <dd>トピックの内容変更や削除は、トピックを作ったときと同じ端末・同じブラウザからのみ可能です。</dd>
+        </dl>
       </div>
     </div>
   </body>
