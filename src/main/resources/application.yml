@@ -1,9 +1,12 @@
 spring:
+  messages:
+    basename: i18n/messages
+  datasource:
+    driver-class-name: net.sf.log4jdbc.DriverSpy
+    url: jdbc:log4jdbc:postgresql://localhost/dorenisuru_development
   jpa:
     hibernate:
       ddl-auto: validate
-  messages:
-    basename: i18n/messages
   thymeleaf:
     mode: HTML
 
