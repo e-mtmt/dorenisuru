@@ -1,6 +1,7 @@
 package jp.eunika.dorenisuru.validation.validator;
 
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintValidator;
@@ -15,15 +16,29 @@ public class ChoicesCountValidator implements ConstraintValidator<ChoicesCount, 
 	@Autowired
 	private HttpServletRequest request;
 
+	private int min;
+	private int max;
+
 	@Override
-	public void initialize(ChoicesCount annotation) {}
+	public void initialize(ChoicesCount annotation) {
+		min = annotation.min();
+		max = annotation.max();
+	}
 
 	@Override
 	public boolean isValid(TopicForm topicForm, ConstraintValidatorContext context) {
 		Objects.requireNonNull(topicForm);
-		if (topicForm.getDeleteChoiceIds().size() < request.getParameterValues("_deleteChoiceIds").length
-				|| !topicForm.getChoiceText().isEmpty()) {
-			return true;
+		String[] deleteChoiceIdsParams = request.getParameterValues("_deleteChoiceIds");
+		String choiceText = topicForm.getChoiceText();
+		long choiceCount = Stream.of(choiceText.split("\n")).filter(text -> !text.trim().isEmpty()).count();
+		// トピック作成
+		if (deleteChoiceIdsParams == null) {
+			if (choiceCount >= min && choiceCount <= max) return true;
+		}
+		// トピック編集
+		else {
+			long totalChoiceCount = (deleteChoiceIdsParams.length - topicForm.getDeleteChoiceIds().size() + choiceCount);
+			if (totalChoiceCount >= min && totalChoiceCount <= max) return true;
 		}
 		context.disableDefaultConstraintViolation();
 		context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())

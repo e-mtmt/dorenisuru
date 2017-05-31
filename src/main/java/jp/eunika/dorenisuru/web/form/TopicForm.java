@@ -8,11 +8,10 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import jp.eunika.dorenisuru.validation.annotation.ChoicesCount;
 import jp.eunika.dorenisuru.validation.annotation.MultiLine;
-import jp.eunika.dorenisuru.web.form.TopicForm.Update;
 import lombok.Data;
 
 @Data
-@ChoicesCount(groups = Update.class)
+@ChoicesCount(min = 1, max = 20)
 public class TopicForm {
 	public interface Create {}
 
