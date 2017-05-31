@@ -1,6 +1,10 @@
 $(function() {
 	$(".noticeMessage").fadeIn("slow");
 
+	$("form").submit(function() {
+		$(":submit", this).prop("disabled", true);
+	});
+
 	$(":radio[id^=choiceFeelings]:checked").parent("label").addClass("active");
 
 	$("[data-toggle='tooltip']").tooltip({
